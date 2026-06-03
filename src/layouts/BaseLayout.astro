@@ -1,7 +1,7 @@
 ---
 import "../styles/global.css";
 import { ClientRouter } from "astro:transitions";
-import { SITE, ADSENSE } from "../consts";
+import { SITE, ADSENSE, ANALYTICS } from "../consts";
 import Seo from "../components/Seo.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
@@ -26,6 +26,23 @@ const props = Astro.props;
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    {
+      /* Google Analytics 4 (gtag.js). Enhanced Measurement tracks the
+         ClientRouter's History API navigations automatically. */
+      ANALYTICS.gaId && (
+        <>
+          <script
+            async
+            src={`https://www.googletagmanager.com/gtag/js?id=${ANALYTICS.gaId}`}
+          />
+          <script
+            is:inline
+            set:html={`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${ANALYTICS.gaId}');`}
+          />
+        </>
+      )
+    }
 
     {/* Set the day/night theme before first paint to avoid any flash. */}
     <script is:inline>

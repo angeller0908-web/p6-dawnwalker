@@ -35,6 +35,12 @@ export const AUTHORS = {
   },
 } as const;
 
+// Analytics. Google Analytics 4 measurement ID (starts with "G-").
+// Leave empty to disable; the gtag snippet only renders when set.
+export const ANALYTICS = {
+  gaId: "G-HMMM1Q8P7Q",
+} as const;
+
 // Monetization. Fill these in AFTER AdSense approval, then redeploy.
 export const ADSENSE = {
   /** e.g. "ca-pub-1234567890123456". Leave empty until approved. */
