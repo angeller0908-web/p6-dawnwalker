@@ -1,0 +1,137 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import ArticleCard from "../components/ArticleCard.astro";
+import AdSlot from "../components/AdSlot.astro";
+import JsonLd from "../components/JsonLd.astro";
+import { videoGameSchema } from "../lib/schema";
+import { getNews, getGuides, formatDate } from "../lib/utils";
+import { GAME, SITE } from "../consts";
+
+const news = (await getNews()).slice(0, 6);
+const guides = await getGuides();
+const latestGuides = guides.slice(0, 6);
+
+// Build-time countdown to launch (JS keeps it ticking live on the client).
+const release = new Date(GAME.releaseDate);
+const diffMs = Math.max(0, release.valueOf() - Date.now());
+const days = Math.floor(diffMs / 86_400_000);
+const initH = Math.floor(diffMs / 3_600_000) % 24;
+const initM = Math.floor(diffMs / 60_000) % 60;
+const initS = Math.floor(diffMs / 1_000) % 60;
+const pad = (n: number) => String(n).padStart(2, "0");
+const released = diffMs === 0;
+---
+
+<BaseLayout title={SITE.name} description={SITE.tagline}>
+  <!-- Hero -->
+  <section class="relative overflow-hidden rounded-2xl text-center py-16 sm:py-24 -mt-8">
+    <img
+      src="/images/hero.jpg"
+      alt=""
+      aria-hidden="true"
+      class="absolute inset-0 z-0 w-full h-full object-cover object-center opacity-45 pointer-events-none"
+    />
+    <div
+      class="absolute inset-0 z-0 pointer-events-none bg-gradient-to-b from-[var(--color-ink)]/40 via-transparent to-[var(--color-ink)]"
+    >
+    </div>
+    <div class="god-rays" aria-hidden="true"></div>
+    <p class="relative uppercase tracking-[0.3em] text-xs text-[var(--color-dawn)] mb-4">
+      Unofficial Guide & Wiki
+    </p>
+    <h1 class="relative font-[var(--font-display)] text-4xl sm:text-6xl font-bold leading-tight mb-4 shimmer-text">
+      {GAME.title}
+    </h1>
+    <p class="relative max-w-2xl mx-auto text-lg text-[var(--color-muted)] mb-7">
+      Everything we know — guides, walkthroughs, builds, lore, and daily news for
+      {GAME.developer}'s dark-fantasy RPG.
+    </p>
+
+    {released ? (
+      <div class="relative inline-flex items-center gap-3 rounded-lg border border-[var(--color-ink-3)] bg-[var(--color-ink-2)] px-6 py-3">
+        <span class="text-[var(--color-dawn)] font-semibold">Out now — {formatDate(release)}</span>
+      </div>
+    ) : (
+      <div
+        id="countdown"
+        data-target={release.toISOString()}
+        class="relative inline-flex items-end gap-2 sm:gap-3 rounded-xl border border-[var(--color-ink-3)] bg-[var(--color-ink-2)]/70 backdrop-blur px-5 sm:px-7 py-4"
+      >
+        {[
+          { id: "cd-d", v: pad(days), label: "Days" },
+          { id: "cd-h", v: pad(initH), label: "Hrs" },
+          { id: "cd-m", v: pad(initM), label: "Min" },
+          { id: "cd-s", v: pad(initS), label: "Sec" },
+        ].map((seg, i) => (
+          <>
+            {i > 0 && <span class="text-2xl sm:text-3xl text-[var(--color-ink-3)] pb-5">:</span>}
+            <span class="flex flex-col items-center">
+              <span id={seg.id} class="font-[var(--font-display)] text-3xl sm:text-4xl font-bold text-[var(--color-blood-bright)] tabular-nums leading-none">{seg.v}</span>
+              <span class="mt-1 text-[10px] uppercase tracking-widest text-[var(--color-muted)]">{seg.label}</span>
+            </span>
+          </>
+        ))}
+      </div>
+    )}
+    <p class="relative mt-3 text-sm text-[var(--color-muted)]">until launch · <strong class="text-[var(--color-parchment)]">{formatDate(release)}</strong></p>
+
+    <div class="relative mt-6 flex flex-wrap justify-center gap-3">
+      <a href="/guides/" class="px-5 py-2 rounded bg-[var(--color-blood)] text-white font-semibold hover:bg-[var(--color-blood-bright)] transition-colors">
+        Browse Guides
+      </a>
+      <a href="/news/" class="px-5 py-2 rounded border border-[var(--color-ink-3)] hover:border-[var(--color-dawn)] transition-colors">
+        Latest News
+      </a>
+    </div>
+  </section>
+
+  <AdSlot />
+
+  {latestGuides.length > 0 && (
+    <section class="mb-12">
+      <div class="flex items-center justify-between mb-5">
+        <h2 class="font-[var(--font-display)] text-2xl text-[var(--color-dawn)]">Latest Guides</h2>
+        <a href="/guides/" class="text-sm text-[var(--color-muted)] hover:text-[var(--color-dawn)]">All guides →</a>
+      </div>
+      <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {latestGuides.map((g) => (
+          <ArticleCard
+            href={`/guides/${g.id}/`}
+            title={g.data.title}
+            description={g.data.description}
+            date={g.data.publishDate}
+            category={g.data.category}
+            tag={g.data.category}
+            image={g.data.image}
+            imageAlt={g.data.imageAlt}
+          />
+        ))}
+      </div>
+    </section>
+  )}
+
+  {news.length > 0 && (
+    <section class="mb-12">
+      <div class="flex items-center justify-between mb-5">
+        <h2 class="font-[var(--font-display)] text-2xl text-[var(--color-dawn)]">Latest News</h2>
+        <a href="/news/" class="text-sm text-[var(--color-muted)] hover:text-[var(--color-dawn)]">All news →</a>
+      </div>
+      <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {news.map((n) => (
+          <ArticleCard
+            href={`/news/${n.id}/`}
+            title={n.data.title}
+            description={n.data.description}
+            date={n.data.publishDate}
+            category="news"
+            tag="News"
+            image={n.data.image}
+            imageAlt={n.data.imageAlt}
+          />
+        ))}
+      </div>
+    </section>
+  )}
+
+  <JsonLd schema={videoGameSchema()} />
+</BaseLayout>

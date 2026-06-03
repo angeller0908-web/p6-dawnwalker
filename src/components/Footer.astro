@@ -1,0 +1,38 @@
+---
+import { SITE, GAME } from "../consts";
+const year = new Date().getFullYear();
+---
+
+<footer class="border-t border-[var(--color-ink-3)] bg-[var(--color-ink-2)] mt-16">
+  <div class="mx-auto max-w-5xl px-4 py-10 text-sm text-[var(--color-muted)]">
+    <div class="grid gap-8 sm:grid-cols-3">
+      <div>
+        <p class="font-[var(--font-display)] text-base text-[var(--color-parchment)] mb-2">{SITE.name}</p>
+        <p>{SITE.tagline}</p>
+      </div>
+      <div>
+        <p class="text-[var(--color-parchment)] mb-2">Explore</p>
+        <ul class="space-y-1">
+          <li><a href="/guides/" class="hover:text-[var(--color-dawn)]">Guides</a></li>
+          <li><a href="/news/" class="hover:text-[var(--color-dawn)]">News</a></li>
+          <li><a href="/rss.xml" class="hover:text-[var(--color-dawn)]">RSS Feed</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="text-[var(--color-parchment)] mb-2">Site</p>
+        <ul class="space-y-1">
+          <li><a href="/about/" class="hover:text-[var(--color-dawn)]">About</a></li>
+          <li><a href="/contact/" class="hover:text-[var(--color-dawn)]">Contact</a></li>
+          <li><a href="/privacy-policy/" class="hover:text-[var(--color-dawn)]">Privacy Policy</a></li>
+          <li><a href="/terms/" class="hover:text-[var(--color-dawn)]">Terms</a></li>
+        </ul>
+      </div>
+    </div>
+    <hr class="my-6 border-[var(--color-ink-3)]" />
+    <p class="text-xs leading-relaxed">
+      © {year} {SITE.name}. This is an unofficial fan site and is not affiliated
+      with or endorsed by {GAME.developer} or {GAME.publisher}. All game names,
+      trademarks, and images are the property of their respective owners.
+    </p>
+  </div>
+</footer>

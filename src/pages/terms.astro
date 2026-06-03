@@ -1,0 +1,56 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Breadcrumbs from "../components/Breadcrumbs.astro";
+import { SITE, GAME } from "../consts";
+const effective = "June 3, 2026";
+---
+
+<BaseLayout
+  title="Terms of Use"
+  description={`Terms of use for ${SITE.name}.`}
+>
+  <Breadcrumbs items={[{ name: "Home", url: "/" }, { name: "Terms", url: "/terms/" }]} />
+  <article class="prose-content max-w-3xl mx-auto">
+    <h1 class="font-[var(--font-display)] text-3xl sm:text-4xl font-bold mb-2">Terms of Use</h1>
+    <p class="text-[var(--color-muted)]">Effective date: {effective}</p>
+
+    <p>
+      By accessing {SITE.name} (the "Site") you agree to these Terms of Use. If
+      you do not agree, please do not use the Site.
+    </p>
+
+    <h2>Content and accuracy</h2>
+    <p>
+      The Site provides game guides, walkthroughs, and news for informational
+      purposes. We work to keep information accurate and up to date, but we make
+      no warranties as to completeness or accuracy, especially for an evolving,
+      pre-release game. Use the information at your own discretion.
+    </p>
+
+    <h2>Intellectual property</h2>
+    <p>
+      Original text on this Site is our work. {GAME.title}, its characters,
+      artwork, and trademarks are the property of {GAME.developer},
+      {GAME.publisher}, and their respective owners. This Site is unofficial and
+      not affiliated with or endorsed by them.
+    </p>
+
+    <h2>External links</h2>
+    <p>
+      The Site links to third-party websites for reference. We are not
+      responsible for the content or practices of those sites.
+    </p>
+
+    <h2>Limitation of liability</h2>
+    <p>
+      The Site is provided "as is" without warranties of any kind. We are not
+      liable for any damages arising from your use of the Site.
+    </p>
+
+    <h2>Changes</h2>
+    <p>
+      We may revise these Terms at any time by updating this page. Continued use
+      of the Site constitutes acceptance of the revised Terms.
+    </p>
+  </article>
+</BaseLayout>

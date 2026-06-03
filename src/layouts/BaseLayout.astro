@@ -1,0 +1,194 @@
+---
+import "../styles/global.css";
+import { ClientRouter } from "astro:transitions";
+import { SITE, ADSENSE } from "../consts";
+import Seo from "../components/Seo.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import Particles from "../components/Particles.astro";
+import JsonLd from "../components/JsonLd.astro";
+import { organizationSchema, websiteSchema } from "../lib/schema";
+
+interface Props {
+  title: string;
+  description?: string;
+  image?: string;
+  type?: "website" | "article";
+  publishedTime?: Date;
+  modifiedTime?: Date;
+  noindex?: boolean;
+}
+const props = Astro.props;
+---
+
+<!doctype html>
+<html lang={SITE.lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    {/* Set the day/night theme before first paint to avoid any flash. */}
+    <script is:inline>
+      (function () {
+        try {
+          var t = localStorage.getItem("theme");
+          if (t !== "day" && t !== "night") {
+            var h = new Date().getHours();
+            t = h >= 6 && h < 18 ? "day" : "night";
+          }
+          document.documentElement.dataset.theme = t;
+        } catch (e) {
+          document.documentElement.dataset.theme = "night";
+        }
+      })();
+    </script>
+
+    <ClientRouter />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title={`${SITE.name} News`}
+      href="/rss.xml"
+    />
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- Fonts: preconnect + display swap for good CWV -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <Seo {...props} />
+
+    <!-- Sitewide structured data -->
+    <JsonLd schema={[organizationSchema(), websiteSchema()]} />
+
+    {
+      /* AdSense loader — only emitted once approved + enabled. The Funding
+         Choices (GDPR consent) message is configured in the AdSense dashboard
+         and served automatically alongside this script. */
+      ADSENSE.enabled && ADSENSE.publisherId && (
+        <script
+          async
+          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE.publisherId}`}
+          crossorigin="anonymous"
+        />
+      )
+    }
+  </head>
+  <body class="flex flex-col min-h-screen">
+    <Particles transition:persist />
+    <div class="grain" aria-hidden="true" transition:persist></div>
+    <Header />
+    <main class="relative z-10 flex-1 mx-auto w-full max-w-5xl px-4 py-8">
+      <slot />
+    </main>
+    <div class="relative z-10">
+      <Footer />
+    </div>
+
+    <script>
+      // Interactive FX: theme toggle, live countdown, cursor spotlight.
+      // Initialized on every page load + after each View Transition swap.
+      let countdownTimer: ReturnType<typeof setInterval> | undefined;
+      let spotlightBound = false;
+
+      function applyTheme() {
+        try {
+          let t = localStorage.getItem("theme");
+          if (t !== "day" && t !== "night") {
+            const h = new Date().getHours();
+            t = h >= 6 && h < 18 ? "day" : "night";
+          }
+          document.documentElement.dataset.theme = t;
+        } catch (e) {
+          /* ignore */
+        }
+      }
+
+      function initThemeToggle() {
+        const btn = document.getElementById("theme-toggle");
+        if (!btn || btn.dataset.bound) return;
+        btn.dataset.bound = "1";
+        btn.addEventListener("click", () => {
+          const next =
+            document.documentElement.dataset.theme === "day" ? "night" : "day";
+          document.documentElement.dataset.theme = next;
+          try {
+            localStorage.setItem("theme", next);
+          } catch (e) {
+            /* ignore */
+          }
+        });
+      }
+
+      function initCountdown() {
+        const el = document.getElementById("countdown");
+        if (!el || !el.dataset.target) return;
+        const target = new Date(el.dataset.target).getTime();
+        const set = (id: string, v: number) => {
+          const n = document.getElementById(id);
+          if (n) n.textContent = String(v).padStart(2, "0");
+        };
+        const tick = () => {
+          let diff = Math.max(0, target - Date.now());
+          const d = Math.floor(diff / 86400000);
+          diff -= d * 86400000;
+          const h = Math.floor(diff / 3600000);
+          diff -= h * 3600000;
+          const m = Math.floor(diff / 60000);
+          diff -= m * 60000;
+          const s = Math.floor(diff / 1000);
+          set("cd-d", d);
+          set("cd-h", h);
+          set("cd-m", m);
+          set("cd-s", s);
+        };
+        tick();
+        countdownTimer = setInterval(tick, 1000);
+      }
+
+      function initSpotlight() {
+        if (spotlightBound) return;
+        spotlightBound = true;
+        let queued = false;
+        let lastEvent: PointerEvent | null = null;
+        document.addEventListener(
+          "pointermove",
+          (e) => {
+            lastEvent = e;
+            if (queued) return;
+            queued = true;
+            requestAnimationFrame(() => {
+              queued = false;
+              const t = lastEvent?.target as HTMLElement | null;
+              const card = t?.closest?.(".spotlight") as HTMLElement | null;
+              if (!card || !lastEvent) return;
+              const r = card.getBoundingClientRect();
+              card.style.setProperty("--mx", `${lastEvent.clientX - r.left}px`);
+              card.style.setProperty("--my", `${lastEvent.clientY - r.top}px`);
+            });
+          },
+          { passive: true },
+        );
+      }
+
+      function init() {
+        applyTheme();
+        initThemeToggle();
+        initCountdown();
+        initSpotlight();
+      }
+
+      document.addEventListener("astro:page-load", init);
+      document.addEventListener("astro:after-swap", applyTheme);
+      document.addEventListener("astro:before-swap", () => {
+        if (countdownTimer) clearInterval(countdownTimer);
+      });
+    </script>
+  </body>
+</html>

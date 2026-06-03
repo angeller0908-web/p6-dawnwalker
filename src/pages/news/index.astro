@@ -1,0 +1,47 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ArticleCard from "../../components/ArticleCard.astro";
+import Breadcrumbs from "../../components/Breadcrumbs.astro";
+import AdSlot from "../../components/AdSlot.astro";
+import { getNews } from "../../lib/utils";
+import { GAME } from "../../consts";
+
+const news = await getNews();
+---
+
+<BaseLayout
+  title="News"
+  description={`The latest ${GAME.title} news — trailers, dev updates, previews, and release information, updated daily.`}
+>
+  <Breadcrumbs items={[{ name: "Home", url: "/" }, { name: "News", url: "/news/" }]} />
+
+  <header class="mb-8">
+    <h1 class="font-[var(--font-display)] text-3xl sm:text-4xl font-bold mb-2">
+      {GAME.title} News
+    </h1>
+    <p class="text-[var(--color-muted)] text-lg">
+      Daily coverage — trailers, developer updates, previews, and everything new about the game.
+    </p>
+  </header>
+
+  {news.length === 0 ? (
+    <p class="text-[var(--color-muted)]">No news posts yet. Check back soon.</p>
+  ) : (
+    <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      {news.map((n) => (
+        <ArticleCard
+          href={`/news/${n.id}/`}
+          title={n.data.title}
+          description={n.data.description}
+          date={n.data.publishDate}
+          category="news"
+          tag="News"
+          image={n.data.image}
+          imageAlt={n.data.imageAlt}
+        />
+      ))}
+    </div>
+  )}
+
+  <AdSlot />
+</BaseLayout>

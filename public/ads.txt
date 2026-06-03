@@ -1,0 +1,4 @@
+# ads.txt — Authorized Digital Sellers
+# After your Google AdSense account is approved, replace the line below with the
+# exact entry AdSense gives you (Sites > Ads.txt). It looks like:
+# google.com, pub-0000000000000000, DIRECT, f08c47fec0942fa0

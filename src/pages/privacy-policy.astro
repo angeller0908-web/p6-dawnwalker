@@ -1,0 +1,97 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Breadcrumbs from "../components/Breadcrumbs.astro";
+import { SITE } from "../consts";
+
+const host = SITE.url.replace(/^https?:\/\//, "");
+const effective = "June 3, 2026";
+---
+
+<BaseLayout
+  title="Privacy Policy"
+  description={`Privacy policy for ${SITE.name}, covering cookies, advertising, and analytics.`}
+  noindex={false}
+>
+  <Breadcrumbs items={[{ name: "Home", url: "/" }, { name: "Privacy Policy", url: "/privacy-policy/" }]} />
+  <article class="prose-content max-w-3xl mx-auto">
+    <h1 class="font-[var(--font-display)] text-3xl sm:text-4xl font-bold mb-2">Privacy Policy</h1>
+    <p class="text-[var(--color-muted)]">Effective date: {effective}</p>
+
+    <p>
+      This Privacy Policy explains how {SITE.name} ("we", "us") handles
+      information when you visit <strong>{host}</strong> (the "Site"). By using
+      the Site you agree to the practices described here.
+    </p>
+
+    <h2>Information we collect</h2>
+    <p>
+      We do not ask you to create an account or submit personal information to
+      read the Site. We collect limited, non-identifying information
+      automatically, such as pages visited and aggregate traffic data, to
+      understand what content is useful and to keep the Site running.
+    </p>
+
+    <h2>Cookies and advertising</h2>
+    <p>
+      We use cookies and similar technologies for analytics and to display
+      advertising. Third-party vendors, including Google, use cookies to serve
+      ads based on your prior visits to this and other websites.
+    </p>
+    <ul>
+      <li>
+        Google's use of advertising cookies enables it and its partners to serve
+        ads to you based on your visit to our Site and/or other sites on the
+        Internet.
+      </li>
+      <li>
+        You may opt out of personalized advertising by visiting
+        <a href="https://www.google.com/settings/ads" rel="nofollow noopener" target="_blank">Google Ads Settings</a>.
+      </li>
+      <li>
+        You can opt out of third-party vendor cookies for personalized
+        advertising at
+        <a href="https://www.aboutads.info/choices/" rel="nofollow noopener" target="_blank">aboutads.info/choices</a>.
+      </li>
+    </ul>
+
+    <h2>Consent (EEA, UK, and Switzerland)</h2>
+    <p>
+      If you are located in the European Economic Area, the United Kingdom, or
+      Switzerland, we ask for your consent before setting non-essential cookies,
+      including advertising cookies, through a consent management platform. You
+      can change or withdraw your consent at any time using the privacy options
+      link in our footer or the consent prompt shown on the Site.
+    </p>
+
+    <h2>Analytics</h2>
+    <p>
+      We use privacy-friendly analytics to measure traffic in aggregate. This
+      data does not identify individual visitors.
+    </p>
+
+    <h2>Your rights</h2>
+    <p>
+      Depending on where you live, you may have the right to access, correct, or
+      delete personal data, or to object to certain processing. To make a
+      request, contact us via our <a href="/contact/">contact page</a>.
+    </p>
+
+    <h2>Children's privacy</h2>
+    <p>
+      The Site is not directed to children under 13, and we do not knowingly
+      collect personal information from them.
+    </p>
+
+    <h2>Changes to this policy</h2>
+    <p>
+      We may update this policy from time to time. Material changes will be
+      reflected by updating the effective date above.
+    </p>
+
+    <h2>Contact</h2>
+    <p>
+      Questions about this policy? Reach us through our
+      <a href="/contact/">contact page</a>.
+    </p>
+  </article>
+</BaseLayout>

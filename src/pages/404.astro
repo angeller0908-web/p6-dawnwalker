@@ -1,0 +1,15 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="Page Not Found" description="The page you were looking for doesn't exist." noindex={true}>
+  <section class="text-center py-20">
+    <p class="font-[var(--font-display)] text-6xl text-[var(--color-blood-bright)] mb-4">404</p>
+    <h1 class="font-[var(--font-display)] text-2xl mb-3">This path has gone dark</h1>
+    <p class="text-[var(--color-muted)] mb-8">The page you were looking for doesn't exist or has moved.</p>
+    <div class="flex flex-wrap justify-center gap-3">
+      <a href="/" class="px-5 py-2 rounded bg-[var(--color-blood)] text-white font-semibold hover:bg-[var(--color-blood-bright)]">Home</a>
+      <a href="/guides/" class="px-5 py-2 rounded border border-[var(--color-ink-3)] hover:border-[var(--color-dawn)]">Browse Guides</a>
+    </div>
+  </section>
+</BaseLayout>

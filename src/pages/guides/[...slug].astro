@@ -1,0 +1,55 @@
+---
+import { render } from "astro:content";
+import ArticleLayout from "../../layouts/ArticleLayout.astro";
+import { getGuides } from "../../lib/utils";
+
+export async function getStaticPaths() {
+  const guides = await getGuides();
+  return guides.map((entry) => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const url = `/guides/${entry.id}/`;
+
+const kickerMap: Record<string, string> = {
+  overview: "Overview",
+  walkthrough: "Walkthrough",
+  boss: "Boss Guide",
+  build: "Build Guide",
+  quest: "Quest Guide",
+  endings: "Endings Guide",
+  beginner: "Beginner Guide",
+  system: "Systems Guide",
+  preview: "Preview",
+};
+---
+
+<ArticleLayout
+  title={entry.data.title}
+  description={entry.data.description}
+  publishDate={entry.data.publishDate}
+  updatedDate={entry.data.updatedDate}
+  author={entry.data.author}
+  url={url}
+  image={entry.data.image}
+  imageAlt={entry.data.imageAlt}
+  video={entry.data.video}
+  videoTitle={entry.data.videoTitle}
+  tags={entry.data.tags}
+  sources={entry.data.sources}
+  faq={entry.data.faq}
+  articleType="Article"
+  category={entry.data.category}
+  kicker={kickerMap[entry.data.category] ?? "Guide"}
+  breadcrumbs={[
+    { name: "Home", url: "/" },
+    { name: "Guides", url: "/guides/" },
+    { name: entry.data.title, url },
+  ]}
+>
+  <Content />
+</ArticleLayout>

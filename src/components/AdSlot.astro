@@ -1,0 +1,37 @@
+---
+import { ADSENSE } from "../consts";
+
+// Responsive AdSense slot. Renders NOTHING until you flip ADSENSE.enabled to
+// true (after approval) and pass a real slot id — no placeholder, no spacing.
+// Existing <AdSlot /> placements stay in the layouts so ads light up the moment
+// you enable them, with no layout changes needed.
+interface Props {
+  /** Ad unit slot id from AdSense, e.g. "1234567890". */
+  slot?: string;
+  /** Extra classes for spacing in different layouts. */
+  class?: string;
+}
+const { slot, class: className = "" } = Astro.props;
+const live = ADSENSE.enabled && ADSENSE.publisherId && slot;
+---
+
+{
+  live && (
+    <aside class={`my-8 ${className}`} aria-label="Advertisement">
+      <p class="text-[10px] uppercase tracking-widest text-[var(--color-muted)] mb-1 text-center">
+        Advertisement
+      </p>
+      <ins
+        class="adsbygoogle block"
+        style="display:block"
+        data-ad-client={ADSENSE.publisherId}
+        data-ad-slot={slot}
+        data-ad-format="auto"
+        data-full-width-responsive="true"
+      />
+      <script is:inline>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+    </aside>
+  )
+}

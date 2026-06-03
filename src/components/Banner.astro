@@ -1,0 +1,54 @@
+---
+// A themed gradient "art" banner used wherever a real image isn't set.
+// Color + glyph are derived from the content category so each section reads
+// distinctly without using any copyrighted game imagery.
+interface Props {
+  category?: string;
+  title: string;
+  /** "card" (16:9 thumb) or "hero" (wider article header). */
+  variant?: "card" | "hero";
+  class?: string;
+}
+const { category = "default", title, variant = "card", class: className = "" } =
+  Astro.props;
+
+const themes: Record<
+  string,
+  { from: string; to: string; accent: string; glyph: string; label: string }
+> = {
+  overview: { from: "#3a2418", to: "#170d12", accent: "#e8a33d", glyph: "◈", label: "Overview" },
+  system: { from: "#16202e", to: "#0d121d", accent: "#6aa9e8", glyph: "◐", label: "System" },
+  boss: { from: "#2c0f15", to: "#15080c", accent: "#e23645", glyph: "⚔", label: "Boss" },
+  build: { from: "#241a30", to: "#110e1a", accent: "#b07de8", glyph: "✦", label: "Build" },
+  quest: { from: "#1c2a22", to: "#0e1410", accent: "#5dc9a0", glyph: "◇", label: "Quest" },
+  endings: { from: "#2a1622", to: "#140a10", accent: "#d96ba8", glyph: "❉", label: "Endings" },
+  beginner: { from: "#202a16", to: "#0f140b", accent: "#9ad84d", glyph: "❖", label: "Beginner" },
+  preview: { from: "#30241a", to: "#18110b", accent: "#e8a33d", glyph: "◆", label: "Preview" },
+  news: { from: "#2a1620", to: "#140b12", accent: "#e23645", glyph: "✶", label: "News" },
+  default: { from: "#1d1a2a", to: "#0e0c15", accent: "#e8a33d", glyph: "⬡", label: "Guide" },
+};
+const t = themes[category] ?? themes.default;
+const glyphSize = variant === "hero" ? "16rem" : "9rem";
+const pad = variant === "hero" ? "p-7" : "p-4";
+const minH = variant === "hero" ? "min-h-[200px] sm:min-h-[280px]" : "aspect-[16/9]";
+---
+
+<div
+  class={`banner banner-sheen ${minH} ${className} flex flex-col justify-end ${pad} rounded-lg`}
+  style={`--from:${t.from};--to:${t.to};--accent:${t.accent}`}
+>
+  <span class="banner-glyph" style={`font-size:${glyphSize}`}>{t.glyph}</span>
+  <div class="relative">
+    <span
+      class="inline-block text-[10px] uppercase tracking-[0.2em] mb-2 px-2 py-0.5 rounded-full"
+      style={`color:${t.accent};border:1px solid color-mix(in srgb, ${t.accent} 40%, transparent);background:color-mix(in srgb, ${t.accent} 10%, transparent)`}
+    >
+      {t.label}
+    </span>
+    {variant === "hero" && (
+      <p class="font-[var(--font-display)] text-xl sm:text-2xl text-[var(--color-parchment)] leading-snug max-w-xl">
+        {title}
+      </p>
+    )}
+  </div>
+</div>

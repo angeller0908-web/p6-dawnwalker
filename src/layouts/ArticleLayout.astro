@@ -1,0 +1,173 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import Breadcrumbs from "../components/Breadcrumbs.astro";
+import AdSlot from "../components/AdSlot.astro";
+import Banner from "../components/Banner.astro";
+import YouTube from "../components/YouTube.astro";
+import JsonLd from "../components/JsonLd.astro";
+import { formatDate } from "../lib/utils";
+import { articleSchema, faqSchema } from "../lib/schema";
+
+interface Props {
+  title: string;
+  description: string;
+  publishDate: Date;
+  updatedDate?: Date;
+  author: string;
+  url: string;
+  image?: string;
+  imageAlt?: string;
+  video?: string;
+  videoTitle?: string;
+  tags?: string[];
+  /** "NewsArticle" for /news, "Article" for /guides. */
+  articleType?: "Article" | "NewsArticle";
+  /** Content category — themes the gradient hero banner when no image is set. */
+  category?: string;
+  /** Breadcrumb trail, last item is the current page. */
+  breadcrumbs: { name: string; url: string }[];
+  faq?: { question: string; answer: string }[];
+  sources?: { label: string; url: string }[];
+  /** Section label shown above the title (e.g. "Boss Guide"). */
+  kicker?: string;
+}
+const {
+  title,
+  description,
+  publishDate,
+  updatedDate,
+  author,
+  url,
+  image,
+  imageAlt,
+  video,
+  videoTitle,
+  tags = [],
+  articleType = "Article",
+  category = "default",
+  breadcrumbs,
+  faq = [],
+  sources = [],
+  kicker,
+} = Astro.props;
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  image={image}
+  type="article"
+  publishedTime={publishDate}
+  modifiedTime={updatedDate}
+>
+  <div class="read-progress" aria-hidden="true"></div>
+
+  <Breadcrumbs items={breadcrumbs} />
+
+  <article class="max-w-3xl mx-auto">
+    <header class="mb-6">
+      {kicker && (
+        <p class="uppercase tracking-widest text-xs text-[var(--color-dawn)] mb-2">{kicker}</p>
+      )}
+      <h1 class="font-[var(--font-display)] text-3xl sm:text-4xl font-bold leading-tight mb-3">
+        {title}
+      </h1>
+      <p class="text-[var(--color-muted)] text-lg mb-4">{description}</p>
+      <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-[var(--color-muted)] border-y border-[var(--color-ink-3)] py-3">
+        <span>By {author}</span>
+        <span aria-hidden="true">·</span>
+        <span>Published <time datetime={publishDate.toISOString()}>{formatDate(publishDate)}</time></span>
+        {updatedDate && (
+          <>
+            <span aria-hidden="true">·</span>
+            <span>Updated <time datetime={updatedDate.toISOString()}>{formatDate(updatedDate)}</time></span>
+          </>
+        )}
+      </div>
+    </header>
+
+    {image ? (
+      <img
+        src={image}
+        alt={imageAlt ?? title}
+        class="w-full rounded-lg mb-8"
+        loading="eager"
+        decoding="async"
+      />
+    ) : (
+      <Banner category={category} title={title} variant="hero" class="mb-8" />
+    )}
+
+    {video && (
+      <figure class="my-8">
+        <YouTube id={video} title={videoTitle ?? title} />
+        <figcaption class="mt-2 text-center text-xs text-[var(--color-muted)]">
+          {videoTitle ?? title} · via the official Dawnwalker YouTube channel
+        </figcaption>
+      </figure>
+    )}
+
+    <AdSlot />
+
+    <div class="prose-content max-w-none">
+      <slot />
+    </div>
+
+    {faq.length > 0 && (
+      <section class="mt-12">
+        <h2 class="font-[var(--font-display)] text-2xl text-[var(--color-dawn)] mb-4">
+          Frequently Asked Questions
+        </h2>
+        <div class="space-y-3">
+          {faq.map((item) => (
+            <details class="rounded border border-[var(--color-ink-3)] bg-[var(--color-ink-2)] p-4">
+              <summary class="cursor-pointer font-semibold text-[var(--color-parchment)]">
+                {item.question}
+              </summary>
+              <p class="mt-2 text-[var(--color-muted)]">{item.answer}</p>
+            </details>
+          ))}
+        </div>
+      </section>
+    )}
+
+    {tags.length > 0 && (
+      <div class="mt-10 flex flex-wrap gap-2">
+        {tags.map((tag) => (
+          <span class="text-xs px-2 py-1 rounded bg-[var(--color-ink-3)] text-[var(--color-muted)]">#{tag}</span>
+        ))}
+      </div>
+    )}
+
+    {sources.length > 0 && (
+      <section class="mt-8 text-sm text-[var(--color-muted)]">
+        <h2 class="font-semibold text-[var(--color-parchment)] mb-2">Sources</h2>
+        <ul class="list-disc pl-5 space-y-1">
+          {sources.map((s) => (
+            <li>
+              <a href={s.url} rel="nofollow noopener" target="_blank" class="hover:text-[var(--color-dawn)] underline">
+                {s.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
+
+    <AdSlot />
+  </article>
+
+  <JsonLd
+    schema={articleSchema({
+      type: articleType,
+      headline: title,
+      description,
+      url,
+      image,
+      datePublished: publishDate,
+      dateModified: updatedDate,
+      authorName: author,
+    })}
+  />
+  {faq.length > 0 && <JsonLd schema={faqSchema(faq)} />}
+</BaseLayout>

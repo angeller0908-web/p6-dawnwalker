@@ -1,0 +1,513 @@
+@import "tailwindcss";
+
+/* Dark, dawn-fantasy palette. Tailwind v4 theme tokens. */
+@theme {
+  --color-ink: #0b0a0f;
+  --color-ink-2: #14121c;
+  --color-ink-3: #1d1a2a;
+  --color-parchment: #ece6da;
+  --color-muted: #9a93a8;
+  --color-blood: #b21f2c;
+  --color-blood-bright: #e23645;
+  --color-dawn: #e8a33d;
+
+  --font-display: "Cinzel", Georgia, serif;
+  --font-body: "Inter", system-ui, -apple-system, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+  background-color: var(--color-ink);
+  color: var(--color-parchment);
+  font-family: var(--font-body);
+}
+
+body {
+  min-height: 100vh;
+  position: relative;
+  background:
+    radial-gradient(1100px 560px at 50% -8%, rgba(178, 31, 44, 0.16), transparent 60%),
+    radial-gradient(900px 520px at 88% 8%, rgba(232, 163, 61, 0.10), transparent 55%),
+    radial-gradient(800px 600px at 10% 100%, rgba(120, 60, 140, 0.08), transparent 60%),
+    var(--color-ink);
+  background-attachment: fixed;
+}
+
+/* ------- Floating light & ember effects (FX layer) ------- */
+.fx-layer {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+.fx-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(70px);
+  opacity: 0.45;
+  mix-blend-mode: screen;
+  animation: orb-drift var(--dur, 34s) ease-in-out infinite alternate;
+}
+.fx-ember {
+  position: absolute;
+  bottom: -18px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--c, #e8a33d) 0%, transparent 68%);
+  box-shadow: 0 0 6px var(--c, #e8a33d);
+  opacity: 0;
+  will-change: transform, opacity;
+  animation: ember-rise var(--dur, 18s) linear infinite;
+  animation-delay: var(--delay, 0s);
+}
+@keyframes ember-rise {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0;
+  }
+  8% {
+    opacity: var(--max-op, 0.7);
+  }
+  50% {
+    transform: translate3d(var(--sway, 24px), -52vh, 0) scale(0.85);
+  }
+  88% {
+    opacity: var(--max-op, 0.7);
+  }
+  100% {
+    transform: translate3d(0, -104vh, 0) scale(0.5);
+    opacity: 0;
+  }
+}
+@keyframes orb-drift {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(var(--dx, 40px), var(--dy, -30px), 0);
+  }
+}
+
+/* ------- Themed gradient art banners (stand-in for images) ------- */
+.banner {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(140deg, var(--from), var(--to));
+}
+.banner::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    120% 90% at 78% 12%,
+    color-mix(in srgb, var(--accent) 28%, transparent),
+    transparent 60%
+  );
+}
+.banner-glyph {
+  position: absolute;
+  right: -0.15em;
+  bottom: -0.35em;
+  font-family: var(--font-display);
+  line-height: 1;
+  font-size: 9rem;
+  color: var(--accent);
+  opacity: 0.18;
+  pointer-events: none;
+  user-select: none;
+}
+.banner-sheen::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    120deg,
+    transparent 35%,
+    rgba(255, 255, 255, 0.07) 50%,
+    transparent 65%
+  );
+  background-size: 250% 100%;
+  animation: sheen 7s linear infinite;
+}
+@keyframes sheen {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+/* Card hover glow */
+.card-glow {
+  transition:
+    border-color 0.25s ease,
+    box-shadow 0.25s ease,
+    transform 0.25s ease;
+}
+.card-glow:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    0 10px 30px -12px rgba(0, 0, 0, 0.7),
+    0 0 0 1px rgba(226, 54, 69, 0.25),
+    0 0 28px -6px rgba(226, 54, 69, 0.35);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fx-orb,
+  .banner-sheen::after {
+    animation: none;
+  }
+  .fx-ember {
+    display: none;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* =========================================================
+   Day / Night theme — tied to the game's core mechanic.
+   Night is the default (:root). Day overrides the palette.
+   ========================================================= */
+:root[data-theme="day"] {
+  --color-ink: #f4ecdb;
+  --color-ink-2: #ece0c6;
+  --color-ink-3: #dcc8a4;
+  --color-parchment: #2a2017;
+  --color-muted: #6e6049;
+  --color-blood: #a81e2a;
+  --color-blood-bright: #c62d39;
+  --color-dawn: #b06a1f;
+}
+
+/* Smooth palette crossfade when toggling. */
+body,
+header,
+footer,
+.card-glow,
+a {
+  transition:
+    background-color 0.35s ease,
+    color 0.35s ease,
+    border-color 0.35s ease;
+}
+
+/* Day-mode background: soft warm dawn instead of dark vignette. */
+:root[data-theme="day"] body {
+  background:
+    radial-gradient(1100px 560px at 50% -8%, rgba(232, 163, 61, 0.22), transparent 60%),
+    radial-gradient(900px 520px at 88% 8%, rgba(214, 45, 57, 0.10), transparent 55%),
+    var(--color-ink);
+  background-attachment: fixed;
+}
+/* Floating light reads differently on a light background: darken the embers
+   (bright gold/red → deep amber/crimson) so they stay visible on cream. */
+:root[data-theme="day"] .fx-orb {
+  mix-blend-mode: multiply;
+  opacity: 0.32;
+}
+:root[data-theme="day"] .fx-ember {
+  filter: brightness(0.42) saturate(1.7);
+}
+:root[data-theme="day"] .grain {
+  opacity: 0.025;
+}
+
+/* Theme toggle button */
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--color-ink-3);
+  color: var(--color-dawn);
+  background: color-mix(in srgb, var(--color-ink-3) 25%, transparent);
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+.theme-toggle:hover {
+  transform: translateY(-1px);
+  background: color-mix(in srgb, var(--color-dawn) 18%, transparent);
+}
+.theme-toggle .icon-day {
+  display: none;
+}
+.theme-toggle .icon-night {
+  display: block;
+}
+:root[data-theme="day"] .theme-toggle .icon-day {
+  display: block;
+}
+:root[data-theme="day"] .theme-toggle .icon-night {
+  display: none;
+}
+
+/* =========================================================
+   Film grain overlay — cheap cinematic texture.
+   ========================================================= */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 160px 160px;
+}
+
+/* =========================================================
+   God rays — volumetric light beams in the hero.
+   ========================================================= */
+.god-rays {
+  position: absolute;
+  inset: -20% 0 auto 0;
+  height: 120%;
+  pointer-events: none;
+  z-index: 0;
+  background: conic-gradient(
+    from 180deg at 50% -10%,
+    transparent 0deg,
+    rgba(232, 163, 61, 0.10) 8deg,
+    transparent 16deg,
+    rgba(178, 31, 44, 0.08) 26deg,
+    transparent 34deg,
+    rgba(232, 163, 61, 0.09) 46deg,
+    transparent 56deg
+  );
+  filter: blur(6px);
+  opacity: 0.8;
+  animation: rays-sway 12s ease-in-out infinite alternate;
+  transform-origin: 50% 0;
+}
+@keyframes rays-sway {
+  from {
+    transform: rotate(-3deg) scaleY(1);
+    opacity: 0.6;
+  }
+  to {
+    transform: rotate(3deg) scaleY(1.05);
+    opacity: 0.9;
+  }
+}
+
+/* =========================================================
+   Reading progress bar (article pages).
+   ========================================================= */
+.read-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  width: 100%;
+  transform-origin: 0 50%;
+  transform: scaleX(0);
+  z-index: 60;
+  background: linear-gradient(90deg, var(--color-blood), var(--color-dawn));
+  box-shadow: 0 0 10px rgba(226, 54, 69, 0.5);
+}
+@supports (animation-timeline: scroll()) {
+  .read-progress {
+    animation: progress-grow linear both;
+    animation-timeline: scroll(root);
+  }
+}
+@keyframes progress-grow {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* =========================================================
+   Shimmer text — flowing highlight across the hero title.
+   ========================================================= */
+.shimmer-text {
+  background: linear-gradient(
+    100deg,
+    var(--color-parchment) 38%,
+    var(--color-dawn) 50%,
+    var(--color-parchment) 62%
+  );
+  background-size: 220% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shimmer 7s linear infinite;
+}
+@keyframes shimmer {
+  to {
+    background-position: 220% center;
+  }
+}
+
+/* =========================================================
+   Scroll-reveal — fade + rise as elements enter the viewport.
+   Pure CSS, GPU-only. Falls back to fully visible (SEO-safe).
+   ========================================================= */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal {
+      animation: reveal-in linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 38%;
+    }
+  }
+}
+@keyframes reveal-in {
+  from {
+    opacity: 0;
+    transform: translateY(26px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* =========================================================
+   Animated conic glow border — for featured / pillar cards.
+   ========================================================= */
+@property --bd-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+.glow-border::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.5px;
+  background: conic-gradient(
+    from var(--bd-angle),
+    transparent 55%,
+    var(--color-blood-bright) 72%,
+    var(--color-dawn) 84%,
+    transparent 96%
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: bd-rotate 6s linear infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+@keyframes bd-rotate {
+  to {
+    --bd-angle: 360deg;
+  }
+}
+
+/* =========================================================
+   Cursor spotlight — highlight follows the pointer on cards.
+   JS sets --mx / --my; CSS does the rest.
+   ========================================================= */
+.spotlight::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: radial-gradient(
+    240px circle at var(--mx, 50%) var(--my, 50%),
+    color-mix(in srgb, var(--color-dawn) 22%, transparent),
+    transparent 60%
+  );
+  z-index: 2;
+}
+.spotlight:hover::after {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .god-rays,
+  .shimmer-text,
+  .glow-border::before {
+    animation: none;
+  }
+  .shimmer-text {
+    color: var(--color-parchment);
+  }
+}
+
+/* Long-form article typography for guides & news bodies. */
+.prose-content {
+  line-height: 1.75;
+}
+.prose-content h2 {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  margin-top: 2.2rem;
+  margin-bottom: 0.8rem;
+  color: var(--color-dawn);
+  scroll-margin-top: 5rem;
+}
+.prose-content h3 {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  margin-top: 1.6rem;
+  margin-bottom: 0.6rem;
+  color: var(--color-parchment);
+}
+.prose-content p,
+.prose-content ul,
+.prose-content ol {
+  margin-bottom: 1.1rem;
+}
+.prose-content ul {
+  list-style: disc;
+  padding-left: 1.4rem;
+}
+.prose-content ol {
+  list-style: decimal;
+  padding-left: 1.4rem;
+}
+.prose-content a {
+  color: var(--color-blood-bright);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.prose-content a:hover {
+  color: var(--color-dawn);
+}
+.prose-content blockquote {
+  border-left: 3px solid var(--color-blood);
+  padding-left: 1rem;
+  color: var(--color-muted);
+  font-style: italic;
+  margin: 1.4rem 0;
+}
+.prose-content code {
+  background: var(--color-ink-3);
+  padding: 0.1rem 0.35rem;
+  border-radius: 0.25rem;
+  font-size: 0.9em;
+}
+.prose-content img {
+  border-radius: 0.5rem;
+  margin: 1.4rem 0;
+}
+.prose-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.4rem 0;
+  font-size: 0.95rem;
+}
+.prose-content th,
+.prose-content td {
+  border: 1px solid var(--color-ink-3);
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+}
+.prose-content th {
+  background: var(--color-ink-3);
+  color: var(--color-dawn);
+}

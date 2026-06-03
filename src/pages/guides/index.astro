@@ -1,0 +1,77 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ArticleCard from "../../components/ArticleCard.astro";
+import Breadcrumbs from "../../components/Breadcrumbs.astro";
+import AdSlot from "../../components/AdSlot.astro";
+import { getGuides } from "../../lib/utils";
+import { GAME } from "../../consts";
+
+const guides = await getGuides();
+const pillars = guides.filter((g) => g.data.pillar);
+const rest = guides.filter((g) => !g.data.pillar);
+---
+
+<BaseLayout
+  title="Guides & Walkthroughs"
+  description={`Complete ${GAME.title} guides — walkthroughs, boss strategies, builds, quests, and beginner tips.`}
+>
+  <Breadcrumbs items={[{ name: "Home", url: "/" }, { name: "Guides", url: "/guides/" }]} />
+
+  <header class="mb-8">
+    <h1 class="font-[var(--font-display)] text-3xl sm:text-4xl font-bold mb-2">
+      {GAME.title} Guides
+    </h1>
+    <p class="text-[var(--color-muted)] text-lg">
+      Walkthroughs, boss strategies, builds, quests, and beginner tips — your complete companion.
+    </p>
+  </header>
+
+  {guides.length === 0 ? (
+    <p class="text-[var(--color-muted)]">Guides are on the way. Check back soon.</p>
+  ) : (
+    <>
+      {pillars.length > 0 && (
+        <section class="mb-10">
+          <h2 class="font-[var(--font-display)] text-xl text-[var(--color-dawn)] mb-4">Essential Guides</h2>
+          <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {pillars.map((g) => (
+              <ArticleCard
+                href={`/guides/${g.id}/`}
+                title={g.data.title}
+                description={g.data.description}
+                date={g.data.publishDate}
+                category={g.data.category}
+                tag={g.data.category}
+                image={g.data.image}
+                imageAlt={g.data.imageAlt}
+                featured
+              />
+            ))}
+          </div>
+        </section>
+      )}
+
+      <AdSlot />
+
+      {rest.length > 0 && (
+        <section>
+          <h2 class="font-[var(--font-display)] text-xl text-[var(--color-dawn)] mb-4">All Guides</h2>
+          <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {rest.map((g) => (
+              <ArticleCard
+                href={`/guides/${g.id}/`}
+                title={g.data.title}
+                description={g.data.description}
+                date={g.data.publishDate}
+                category={g.data.category}
+            tag={g.data.category}
+                image={g.data.image}
+                imageAlt={g.data.imageAlt}
+              />
+            ))}
+          </div>
+        </section>
+      )}
+    </>
+  )}
+</BaseLayout>

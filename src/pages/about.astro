@@ -1,0 +1,56 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Breadcrumbs from "../components/Breadcrumbs.astro";
+import { SITE, GAME } from "../consts";
+---
+
+<BaseLayout
+  title="About"
+  description={`About ${SITE.name} — who we are and how we cover ${GAME.title}.`}
+>
+  <Breadcrumbs items={[{ name: "Home", url: "/" }, { name: "About", url: "/about/" }]} />
+  <article class="prose-content max-w-3xl mx-auto">
+    <h1 class="font-[var(--font-display)] text-3xl sm:text-4xl font-bold mb-4">About {SITE.name}</h1>
+
+    <p>
+      {SITE.name} is an independent fan resource dedicated to <strong>{GAME.title}</strong>,
+      the dark-fantasy role-playing game from {GAME.developer}. Our goal is simple:
+      be the most accurate, well-organized, and genuinely useful guide and news
+      destination for the game — from the months before launch through the deep
+      end-game.
+    </p>
+
+    <h2>What we cover</h2>
+    <ul>
+      <li><strong>Guides &amp; walkthroughs</strong> — main-story progression, side quests, and area-by-area help.</li>
+      <li><strong>Boss strategies</strong> — patterns, counters, and recommended preparation.</li>
+      <li><strong>Builds</strong> — character, skill, and equipment setups for different playstyles.</li>
+      <li><strong>News</strong> — trailers, developer updates, and verified information, updated daily.</li>
+    </ul>
+
+    <h2>Our editorial approach</h2>
+    <p>
+      Every article is written and fact-checked by a human editor. When we report
+      news, we summarize and add original analysis rather than copying source
+      material, and we link to the primary sources so you can verify the details
+      yourself. Pages carry clear published and updated dates so you always know
+      how current the information is.
+    </p>
+
+    <h2>Who writes this</h2>
+    <p>
+      Content is produced by the <strong>{SITE.name} Team</strong> — longtime RPG
+      players who have followed {GAME.developer}'s work since its announcement.
+      Have a correction or a tip? We genuinely want it — reach us on our
+      <a href="/contact/">contact page</a>.
+    </p>
+
+    <h2>Disclaimer</h2>
+    <p>
+      {SITE.name} is an unofficial fan site. It is not affiliated with, endorsed
+      by, or sponsored by {GAME.developer} or {GAME.publisher}. All trademarks,
+      game titles, and images are the property of their respective owners and are
+      used here for identification and commentary purposes.
+    </p>
+  </article>
+</BaseLayout>

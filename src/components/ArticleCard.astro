@@ -1,0 +1,62 @@
+---
+import { formatDate } from "../lib/utils";
+import Banner from "./Banner.astro";
+
+interface Props {
+  href: string;
+  title: string;
+  description: string;
+  date: Date;
+  tag?: string;
+  /** Content category — themes the gradient banner when no image is set. */
+  category?: string;
+  image?: string;
+  imageAlt?: string;
+  /** Adds the animated glow border for pillar / essential cards. */
+  featured?: boolean;
+}
+const {
+  href,
+  title,
+  description,
+  date,
+  tag,
+  category,
+  image,
+  imageAlt,
+  featured = false,
+} = Astro.props;
+---
+
+<article
+  class:list={[
+    "card-glow spotlight reveal group relative rounded-lg border border-[var(--color-ink-3)] bg-[var(--color-ink-2)]/90 overflow-hidden",
+    featured && "glow-border",
+  ]}
+>
+  <a href={href} class="block">
+    {image ? (
+      <div class="aspect-[16/9] overflow-hidden bg-[var(--color-ink-3)]">
+        <img
+          src={image}
+          alt={imageAlt ?? title}
+          loading="lazy"
+          decoding="async"
+          class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+        />
+      </div>
+    ) : (
+      <Banner category={category} title={title} variant="card" />
+    )}
+    <div class="p-4">
+      <div class="flex items-center gap-2 text-xs text-[var(--color-muted)] mb-2">
+        {tag && <span class="uppercase tracking-wide text-[var(--color-dawn)]">{tag}</span>}
+        <time datetime={date.toISOString()}>{formatDate(date)}</time>
+      </div>
+      <h3 class="font-[var(--font-display)] text-lg text-[var(--color-parchment)] group-hover:text-[var(--color-dawn)] transition-colors mb-1">
+        {title}
+      </h3>
+      <p class="text-sm text-[var(--color-muted)] line-clamp-2">{description}</p>
+    </div>
+  </a>
+</article>

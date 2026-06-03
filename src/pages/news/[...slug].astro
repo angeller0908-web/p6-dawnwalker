@@ -1,0 +1,42 @@
+---
+import { render } from "astro:content";
+import ArticleLayout from "../../layouts/ArticleLayout.astro";
+import { getNews } from "../../lib/utils";
+
+export async function getStaticPaths() {
+  const news = await getNews();
+  return news.map((entry) => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const url = `/news/${entry.id}/`;
+---
+
+<ArticleLayout
+  title={entry.data.title}
+  description={entry.data.description}
+  publishDate={entry.data.publishDate}
+  updatedDate={entry.data.updatedDate}
+  author={entry.data.author}
+  url={url}
+  image={entry.data.image}
+  imageAlt={entry.data.imageAlt}
+  video={entry.data.video}
+  videoTitle={entry.data.videoTitle}
+  tags={entry.data.tags}
+  sources={entry.data.sources}
+  articleType="NewsArticle"
+  category="news"
+  kicker="News"
+  breadcrumbs={[
+    { name: "Home", url: "/" },
+    { name: "News", url: "/news/" },
+    { name: entry.data.title, url },
+  ]}
+>
+  <Content />
+</ArticleLayout>

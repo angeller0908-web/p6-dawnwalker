@@ -1,0 +1,29 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Breadcrumbs from "../components/Breadcrumbs.astro";
+import { SITE } from "../consts";
+
+// Set this to a real inbox before launch (AdSense requires a working contact).
+const CONTACT_EMAIL = "hello@dawnwalker.wiki";
+---
+
+<BaseLayout
+  title="Contact"
+  description={`Get in touch with the ${SITE.name} team — corrections, tips, and questions.`}
+>
+  <Breadcrumbs items={[{ name: "Home", url: "/" }, { name: "Contact", url: "/contact/" }]} />
+  <article class="prose-content max-w-3xl mx-auto">
+    <h1 class="font-[var(--font-display)] text-3xl sm:text-4xl font-bold mb-4">Contact Us</h1>
+    <p>
+      Spotted an error, have a tip, or want to reach the editorial team? We read
+      everything.
+    </p>
+    <p>
+      Email us at <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.
+    </p>
+    <p>
+      For corrections, please include the page URL and the detail that needs
+      fixing so we can update it quickly.
+    </p>
+  </article>
+</BaseLayout>
