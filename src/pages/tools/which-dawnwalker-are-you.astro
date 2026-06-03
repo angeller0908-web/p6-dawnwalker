@@ -1,0 +1,333 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Breadcrumbs from "../../components/Breadcrumbs.astro";
+import AdSlot from "../../components/AdSlot.astro";
+import JsonLd from "../../components/JsonLd.astro";
+import { GAME } from "../../consts";
+
+// Static, crawlable description of each result — also rendered below the quiz.
+const archetypes = [
+  {
+    key: "predator",
+    name: "The Predator",
+    blurb:
+      "You lean into the curse. Power is power, and the night is where Coen is strongest — so you take what the vampire half offers and don't flinch.",
+    links: [
+      { label: "Vampire Powers & Wolf Form", href: "/guides/vampire-powers-and-wolf-form/" },
+      { label: "Combat & Hex Magic", href: "/guides/combat-and-hex-magic/" },
+    ],
+  },
+  {
+    key: "penitent",
+    name: "The Penitent",
+    blurb:
+      "You hold the line on Coen's humanity. The power is a tool, not an identity — you'd rather save your family as a man than win as a monster.",
+    links: [
+      { label: "Story, Setting & Characters", href: "/guides/story-setting-characters/" },
+      { label: "The 30-Day Time Limit", href: "/guides/30-day-time-limit-explained/" },
+    ],
+  },
+  {
+    key: "schemer",
+    name: "The Schemer",
+    blurb:
+      "You read the room before you draw a blade. Reputation, leverage, and the right word in the right ear get you further than brute force in Vale Sangora.",
+    links: [
+      { label: "Infamy System Explained", href: "/guides/infamy-system-explained/" },
+      { label: "Gameplay Systems Explained", href: "/guides/gameplay-systems-explained/" },
+    ],
+  },
+  {
+    key: "wanderer",
+    name: "The Wanderer",
+    blurb:
+      "The valley is yours to roam. You chase the side path, the rumor, the locked door — the narrative sandbox is a playground, not a checklist.",
+    links: [
+      { label: "Vale Sangora World Guide", href: "/guides/vale-sangora-world-guide/" },
+      { label: "Builds & Skill Trees", href: "/guides/builds-and-skill-trees/" },
+    ],
+  },
+];
+---
+
+<BaseLayout
+  title="Which Dawnwalker Are You? — Personality Quiz"
+  description={`Take our ${GAME.title} personality quiz: answer six questions and find out whether you'd play Coen as a predator, a penitent, a schemer, or a wanderer.`}
+>
+  <Breadcrumbs
+    items={[
+      { name: "Home", url: "/" },
+      { name: "Tools", url: "/tools/" },
+      { name: "Which Dawnwalker Are You?", url: "/tools/which-dawnwalker-are-you/" },
+    ]}
+  />
+
+  <header class="mb-6 text-center">
+    <p class="uppercase tracking-[0.2em] text-xs text-[var(--color-dawn)] mb-2">Personality Quiz</p>
+    <h1 class="font-[var(--font-display)] text-3xl sm:text-5xl font-bold leading-tight mb-3">
+      Which Dawnwalker Are You?
+    </h1>
+    <p class="max-w-2xl mx-auto text-[var(--color-muted)]">
+      Coen is human by day and vampire by night — but the kind of Dawnwalker he
+      becomes is up to you. Answer six quick questions to find your playstyle.
+    </p>
+  </header>
+
+  <!-- Interactive quiz (progressively enhanced; static fallback below for crawlers) -->
+  <section
+    id="quiz"
+    class="rounded-2xl border border-[var(--color-ink-3)] bg-[var(--color-ink-2)]/80 p-6 sm:p-8 min-h-[22rem]"
+    aria-live="polite"
+  >
+    <noscript>
+      <p class="text-[var(--color-muted)]">
+        This quiz needs JavaScript. Below is a description of every result you can get.
+      </p>
+    </noscript>
+  </section>
+
+  <div class="mt-10">
+    <AdSlot />
+  </div>
+
+  <!-- Crawlable result descriptions + internal links -->
+  <section class="mt-10">
+    <h2 class="font-[var(--font-display)] text-2xl text-[var(--color-dawn)] mb-5">
+      The four Dawnwalker archetypes
+    </h2>
+    <div class="grid gap-5 sm:grid-cols-2">
+      {archetypes.map((a) => (
+        <div class="rounded-xl border border-[var(--color-ink-3)] bg-[var(--color-ink-2)]/60 p-5">
+          <h3 class="font-[var(--font-display)] text-lg text-[var(--color-parchment)] mb-2">{a.name}</h3>
+          <p class="text-sm text-[var(--color-muted)] mb-3">{a.blurb}</p>
+          <ul class="flex flex-wrap gap-x-4 gap-y-1 text-sm">
+            {a.links.map((l) => (
+              <li><a href={l.href} class="text-[var(--color-blood-bright)] hover:text-[var(--color-dawn)] underline underline-offset-2">{l.label}</a></li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+    <p class="mt-6 text-sm text-[var(--color-muted)]">
+      This is a just-for-fun quiz based on the game's announced premise — there
+      are no wrong answers, and your real playstyle is whatever you enjoy. For
+      what's actually confirmed, start with our
+      <a href="/guides/everything-we-know/" class="text-[var(--color-blood-bright)] hover:text-[var(--color-dawn)] underline underline-offset-2">Everything We Know</a> hub.
+    </p>
+  </section>
+
+  <JsonLd
+    schema={{
+      "@context": "https://schema.org",
+      "@type": "Quiz",
+      name: "Which Dawnwalker Are You?",
+      about: { "@type": "VideoGame", name: GAME.title },
+      educationalLevel: "casual",
+    }}
+  />
+</BaseLayout>
+
+<script>
+  // "Which Dawnwalker Are You?" — self-contained quiz. Re-inits on every
+  // View Transition page load. No dependencies, no network.
+  type Key = "predator" | "penitent" | "schemer" | "wanderer";
+
+  const QUESTIONS: { q: string; a: { t: string; k: Key }[] }[] = [
+    {
+      q: "Brencis offers you power with strings attached. Your gut reaction?",
+      a: [
+        { t: "Take it. I'll worry about the cost later.", k: "predator" },
+        { t: "Refuse what I can; I won't be owned.", k: "penitent" },
+        { t: "Accept, but start planning how to turn it on him.", k: "schemer" },
+        { t: "Take it and disappear into the valley to test it.", k: "wanderer" },
+      ],
+    },
+    {
+      q: "Night falls and the vampire half stirs. You…",
+      a: [
+        { t: "Let it loose — this is when I'm strongest.", k: "predator" },
+        { t: "Keep it leashed unless I truly need it.", k: "penitent" },
+        { t: "Use it for the quiet work: stalking, listening.", k: "schemer" },
+        { t: "Go where I couldn't reach by day.", k: "wanderer" },
+      ],
+    },
+    {
+      q: "A village elder blocks your path. How do you get through?",
+      a: [
+        { t: "Make him afraid of me.", k: "predator" },
+        { t: "Earn his trust honestly.", k: "penitent" },
+        { t: "Find what he wants and trade for it.", k: "schemer" },
+        { t: "Find another way around entirely.", k: "wanderer" },
+      ],
+    },
+    {
+      q: "Which reward tempts you most?",
+      a: [
+        { t: "A brutal new combat power.", k: "predator" },
+        { t: "A way to help my family directly.", k: "penitent" },
+        { t: "Secret knowledge or leverage.", k: "schemer" },
+        { t: "A hidden region no one's mapped.", k: "wanderer" },
+      ],
+    },
+    {
+      q: "Your reputation in Vale Sangora should be…",
+      a: [
+        { t: "Feared. Let them whisper my name.", k: "predator" },
+        { t: "Respected. A good man in dark times.", k: "penitent" },
+        { t: "Whatever's useful in the moment.", k: "schemer" },
+        { t: "Unknown. I'm a ghost passing through.", k: "wanderer" },
+      ],
+    },
+    {
+      q: "The 30 days are ticking. Your approach to the clock?",
+      a: [
+        { t: "Smash straight at the threat, fast and hard.", k: "predator" },
+        { t: "Stay focused on saving the people I love.", k: "penitent" },
+        { t: "Set traps and let problems solve themselves.", k: "schemer" },
+        { t: "Ignore the pressure; explore at my own pace.", k: "wanderer" },
+      ],
+    },
+  ];
+
+  const RESULTS: Record<Key, { name: string; blurb: string; links: { label: string; href: string }[] }> = {
+    predator: {
+      name: "The Predator",
+      blurb: "You lean into the curse. The night is where Coen is strongest, and you take what the vampire half offers without flinching.",
+      links: [
+        { label: "Vampire Powers & Wolf Form", href: "/guides/vampire-powers-and-wolf-form/" },
+        { label: "Combat & Hex Magic", href: "/guides/combat-and-hex-magic/" },
+      ],
+    },
+    penitent: {
+      name: "The Penitent",
+      blurb: "You hold the line on Coen's humanity. The power is a tool, not an identity — you'd rather win as a man than as a monster.",
+      links: [
+        { label: "Story, Setting & Characters", href: "/guides/story-setting-characters/" },
+        { label: "The 30-Day Time Limit", href: "/guides/30-day-time-limit-explained/" },
+      ],
+    },
+    schemer: {
+      name: "The Schemer",
+      blurb: "You read the room before you draw a blade. Reputation and leverage get you further than brute force in Vale Sangora.",
+      links: [
+        { label: "Infamy System Explained", href: "/guides/infamy-system-explained/" },
+        { label: "Gameplay Systems Explained", href: "/guides/gameplay-systems-explained/" },
+      ],
+    },
+    wanderer: {
+      name: "The Wanderer",
+      blurb: "The valley is yours to roam. You chase the side path, the rumor, the locked door — the narrative sandbox is a playground.",
+      links: [
+        { label: "Vale Sangora World Guide", href: "/guides/vale-sangora-world-guide/" },
+        { label: "Builds & Skill Trees", href: "/guides/builds-and-skill-trees/" },
+      ],
+    },
+  };
+
+  function esc(s: string) {
+    return s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c] as string));
+  }
+
+  function initQuiz() {
+    const root = document.getElementById("quiz");
+    if (!root || root.dataset.bound === "1") return;
+    root.dataset.bound = "1";
+
+    let current = 0;
+    const tally: Record<Key, number> = { predator: 0, penitent: 0, schemer: 0, wanderer: 0 };
+
+    const render = () => {
+      if (current === 0 && !root.dataset.started) {
+        root.innerHTML = `
+          <div class="text-center py-8">
+            <p class="font-[var(--font-display)] text-2xl text-[var(--color-parchment)] mb-3">Six questions. One verdict.</p>
+            <p class="text-[var(--color-muted)] mb-6">No spoilers — just your instincts.</p>
+            <button id="quiz-start" class="px-6 py-3 rounded bg-[var(--color-blood)] text-white font-semibold hover:bg-[var(--color-blood-bright)] transition-colors">Begin the quiz</button>
+          </div>`;
+        root.querySelector("#quiz-start")?.addEventListener("click", () => {
+          root.dataset.started = "1";
+          renderQuestion();
+        });
+        return;
+      }
+      renderQuestion();
+    };
+
+    const renderQuestion = () => {
+      const item = QUESTIONS[current];
+      const pct = Math.round((current / QUESTIONS.length) * 100);
+      root.innerHTML = `
+        <div>
+          <div class="mb-5">
+            <div class="flex justify-between text-xs text-[var(--color-muted)] mb-1">
+              <span>Question ${current + 1} of ${QUESTIONS.length}</span>
+              <span>${pct}%</span>
+            </div>
+            <div class="h-1.5 rounded bg-[var(--color-ink-3)] overflow-hidden">
+              <div class="h-full bg-[var(--color-dawn)] transition-all" style="width:${pct}%"></div>
+            </div>
+          </div>
+          <p class="font-[var(--font-display)] text-xl text-[var(--color-parchment)] mb-5">${esc(item.q)}</p>
+          <div class="grid gap-3" id="quiz-answers">
+            ${item.a.map((ans, i) => `
+              <button data-k="${ans.k}" class="quiz-ans text-left rounded-lg border border-[var(--color-ink-3)] bg-[var(--color-ink)]/40 px-4 py-3 hover:border-[var(--color-dawn)] hover:bg-[var(--color-ink-3)]/40 transition-colors" data-i="${i}">
+                ${esc(ans.t)}
+              </button>`).join("")}
+          </div>
+        </div>`;
+      root.querySelectorAll<HTMLButtonElement>(".quiz-ans").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          tally[btn.dataset.k as Key]++;
+          current++;
+          if (current >= QUESTIONS.length) renderResult();
+          else renderQuestion();
+        });
+      });
+    };
+
+    const renderResult = () => {
+      const winner = (Object.keys(tally) as Key[]).reduce((a, b) => (tally[b] > tally[a] ? b : a));
+      const r = RESULTS[winner];
+      root.innerHTML = `
+        <div class="text-center py-2">
+          <p class="uppercase tracking-[0.2em] text-xs text-[var(--color-dawn)] mb-2">You are…</p>
+          <p class="font-[var(--font-display)] text-3xl sm:text-4xl font-bold text-[var(--color-blood-bright)] mb-3">${esc(r.name)}</p>
+          <p class="max-w-xl mx-auto text-[var(--color-muted)] mb-6">${esc(r.blurb)}</p>
+          <p class="text-sm text-[var(--color-parchment)] mb-2">Guides for your playstyle:</p>
+          <div class="flex flex-wrap justify-center gap-3 mb-7">
+            ${r.links.map((l) => `<a href="${l.href}" class="rounded border border-[var(--color-ink-3)] px-4 py-2 text-sm text-[var(--color-dawn)] hover:border-[var(--color-dawn)] transition-colors">${esc(l.label)} →</a>`).join("")}
+          </div>
+          <div class="flex flex-wrap justify-center gap-3">
+            <button id="quiz-share" class="px-5 py-2 rounded bg-[var(--color-blood)] text-white font-semibold hover:bg-[var(--color-blood-bright)] transition-colors">Share result</button>
+            <button id="quiz-retry" class="px-5 py-2 rounded border border-[var(--color-ink-3)] hover:border-[var(--color-dawn)] transition-colors">Retake quiz</button>
+          </div>
+          <p id="quiz-share-note" class="mt-3 text-xs text-[var(--color-muted)] h-4"></p>
+        </div>`;
+      root.querySelector("#quiz-retry")?.addEventListener("click", () => {
+        current = 0;
+        (Object.keys(tally) as Key[]).forEach((k) => (tally[k] = 0));
+        delete root.dataset.started;
+        render();
+      });
+      root.querySelector("#quiz-share")?.addEventListener("click", async () => {
+        const text = `I'm ${r.name} in The Blood of Dawnwalker. Which Dawnwalker are you?`;
+        const url = location.href;
+        const note = root.querySelector("#quiz-share-note");
+        try {
+          if (navigator.share) {
+            await navigator.share({ title: "Which Dawnwalker Are You?", text, url });
+          } else {
+            await navigator.clipboard.writeText(`${text} ${url}`);
+            if (note) note.textContent = "Copied to clipboard!";
+          }
+        } catch (_) {
+          /* user cancelled share — ignore */
+        }
+      });
+    };
+
+    render();
+  }
+
+  document.addEventListener("astro:page-load", initQuiz);
+</script>

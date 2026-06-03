@@ -1,0 +1,131 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Breadcrumbs from "../../components/Breadcrumbs.astro";
+import AdSlot from "../../components/AdSlot.astro";
+import { GAME, SITE } from "../../consts";
+
+const release = new Date(GAME.releaseDate);
+const diffMs = Math.max(0, release.valueOf() - Date.now());
+const days = Math.floor(diffMs / 86_400_000);
+
+// Planned skill categories. Final trees + nodes ship the day the game unlocks them.
+const TREES = [
+  { id: "hex", label: "Hex Magic", glyph: "✷", blurb: "Curses, blood hexes, and ranged dark magic.", guide: "/guides/combat-and-hex-magic/" },
+  { id: "vampire", label: "Vampire Powers", glyph: "🜲", blurb: "Night-only abilities: speed, drain, and predator senses.", guide: "/guides/vampire-powers-and-wolf-form/" },
+  { id: "wolf", label: "Wolf Form", glyph: "☾", blurb: "Bestial transformation for mobility and raw power.", guide: "/guides/vampire-powers-and-wolf-form/" },
+  { id: "combat", label: "Combat & Steel", glyph: "⚔", blurb: "Human-side weapon skills usable day or night.", guide: "/guides/combat-and-hex-magic/" },
+];
+---
+
+<BaseLayout
+  title="Build & Skill Planner (Launching Sep 3)"
+  description={`Plan your ${GAME.title} build — hex magic, vampire powers, wolf form, and combat. The interactive skill-tree planner unlocks on release day.`}
+>
+  <Breadcrumbs
+    items={[
+      { name: "Home", url: "/" },
+      { name: "Tools", url: "/tools/" },
+      { name: "Build Planner", url: "/tools/build-planner/" },
+    ]}
+  />
+
+  <header class="mb-6">
+    <div class="inline-flex items-center gap-2 rounded-full border border-[var(--color-ink-3)] bg-[var(--color-ink-2)] px-3 py-1 text-xs text-[var(--color-dawn)] mb-3">
+      <span class="inline-block h-1.5 w-1.5 rounded-full bg-[var(--color-blood-bright)] animate-pulse"></span>
+      Interactive planner · unlocks in <span id="bp-days">{days}</span> days
+    </div>
+    <h1 class="font-[var(--font-display)] text-3xl sm:text-4xl font-bold mb-2">
+      Build &amp; Skill Planner
+    </h1>
+    <p class="text-[var(--color-muted)] text-lg max-w-2xl">
+      When Rebel Wolves reveals the full skill trees at launch, this planner goes
+      live — letting you spec hex magic, vampire powers, wolf form, and combat,
+      then share your build. Here's the shape of what's coming.
+    </p>
+  </header>
+
+  <!-- Working tab switcher across the planned trees; nodes are locked previews -->
+  <section class="rounded-2xl border border-[var(--color-ink-3)] bg-[var(--color-ink-2)]/80 p-5 sm:p-6">
+    <div id="bp-tabs" class="flex flex-wrap gap-2 mb-5">
+      {TREES.map((t, i) => (
+        <button
+          data-tab={t.id}
+          class:list={[
+            "bp-tab rounded-lg border px-4 py-2 text-sm transition-colors",
+            i === 0
+              ? "border-[var(--color-dawn)] text-[var(--color-parchment)] bg-[var(--color-dawn)]/10"
+              : "border-[var(--color-ink-3)] text-[var(--color-muted)] hover:border-[var(--color-dawn)]",
+          ]}
+        >
+          <span class="mr-1">{t.glyph}</span>{t.label}
+        </button>
+      ))}
+    </div>
+
+    {TREES.map((t, i) => (
+      <div data-panel={t.id} class="bp-panel" hidden={i !== 0}>
+        <p class="text-[var(--color-muted)] mb-5">{t.blurb}</p>
+        <div class="grid grid-cols-3 sm:grid-cols-6 gap-3 mb-5">
+          {Array.from({ length: 12 }).map((_, n) => (
+            <div
+              class="aspect-square rounded-lg border border-dashed border-[var(--color-ink-3)] bg-[var(--color-ink)]/40 flex items-center justify-center text-[var(--color-ink-3)] select-none"
+              title="Unlocks at launch"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <rect x="5" y="11" width="14" height="10" rx="2" />
+                <path d="M8 11V7a4 4 0 0 1 8 0v4" />
+              </svg>
+            </div>
+          ))}
+        </div>
+        <a href={t.guide} class="text-sm text-[var(--color-dawn)] hover:underline">
+          Read the {t.label} guide →
+        </a>
+      </div>
+    ))}
+  </section>
+
+  <div class="mt-6 rounded-xl border border-[var(--color-ink-3)] bg-[var(--color-ink-2)]/60 p-5 text-sm text-[var(--color-muted)]">
+    <p class="text-[var(--color-parchment)] font-[var(--font-display)] mb-1">Want it the moment it's live?</p>
+    <p>
+      Bookmark this page (<kbd class="rounded bg-[var(--color-ink-3)] px-1.5 py-0.5 text-xs">Ctrl/Cmd + D</kbd>) — we'll
+      fill in real nodes, point costs, and shareable build links on
+      <strong class="text-[var(--color-parchment)]">September 3, 2026</strong>. Until then, our
+      <a href="/guides/builds-and-skill-trees/" class="text-[var(--color-blood-bright)] hover:text-[var(--color-dawn)] underline underline-offset-2">Builds &amp; Skill Trees</a>
+      guide covers everything confirmed so far.
+    </p>
+  </div>
+
+  <div class="mt-10">
+    <AdSlot />
+  </div>
+</BaseLayout>
+
+<script>
+  // Build-planner tab switcher (the planner data itself ships at launch).
+  function initBuildPlanner() {
+    const tabs = document.getElementById("bp-tabs");
+    if (!tabs || tabs.dataset.bound === "1") return;
+    tabs.dataset.bound = "1";
+
+    const buttons = tabs.querySelectorAll<HTMLButtonElement>(".bp-tab");
+    buttons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const id = btn.dataset.tab;
+        buttons.forEach((b) => {
+          const on = b === btn;
+          b.classList.toggle("border-[var(--color-dawn)]", on);
+          b.classList.toggle("text-[var(--color-parchment)]", on);
+          b.classList.toggle("bg-[var(--color-dawn)]/10", on);
+          b.classList.toggle("border-[var(--color-ink-3)]", !on);
+          b.classList.toggle("text-[var(--color-muted)]", !on);
+        });
+        document.querySelectorAll<HTMLElement>(".bp-panel").forEach((p) => {
+          (p as HTMLElement).hidden = p.dataset.panel !== id;
+        });
+      });
+    });
+  }
+
+  document.addEventListener("astro:page-load", initBuildPlanner);
+</script>

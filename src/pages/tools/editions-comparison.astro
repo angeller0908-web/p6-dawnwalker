@@ -1,0 +1,243 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Breadcrumbs from "../../components/Breadcrumbs.astro";
+import AdSlot from "../../components/AdSlot.astro";
+import JsonLd from "../../components/JsonLd.astro";
+import { GAME } from "../../consts";
+
+// Feature keys used both for the matrix and the interactive recommender.
+const FEATURES = [
+  { key: "base", label: "Base game" },
+  { key: "soundtrack", label: "Digital soundtrack" },
+  { key: "comic", label: "Digital comic" },
+  { key: "compendiumDigital", label: "Digital world compendium" },
+  { key: "steelbook", label: "SteelBook case" },
+  { key: "map", label: "Physical world map" },
+  { key: "compendiumPhysical", label: "Physical compendium" },
+  { key: "figurine", label: "9″ Coen figurine" },
+];
+
+const EDITIONS = [
+  {
+    id: "standard", name: "Standard", price: "$69.99", priceNum: 69.99,
+    format: "Digital / Physical",
+    has: ["base"],
+    note: "The full game, nothing cosmetic missing.",
+  },
+  {
+    id: "eclipse", name: "Eclipse", price: "$79.99", priceNum: 79.99,
+    format: "Digital",
+    has: ["base", "soundtrack", "comic", "compendiumDigital"],
+    note: "+$10 for the soundtrack, comic, and in-world compendium.",
+  },
+  {
+    id: "dayone", name: "Day One", price: "Retail", priceNum: 75,
+    format: "Physical",
+    has: ["base", "steelbook", "map"],
+    note: "Physical pre-order bonus: SteelBook and world map.",
+  },
+  {
+    id: "collectors", name: "Collector's", price: "$199.99", priceNum: 199.99,
+    format: "Physical",
+    has: ["base", "soundtrack", "comic", "compendiumDigital", "steelbook", "map", "compendiumPhysical", "figurine"],
+    note: "Everything, plus the physical compendium and Coen figurine.",
+  },
+];
+---
+
+<BaseLayout
+  title="Editions Comparison — Which Version Should You Buy?"
+  description={`Compare every edition of ${GAME.title}: Standard, Eclipse, Day One, and Collector's. Filter by what matters to you and see which is worth it.`}
+>
+  <Breadcrumbs
+    items={[
+      { name: "Home", url: "/" },
+      { name: "Tools", url: "/tools/" },
+      { name: "Editions Comparison", url: "/tools/editions-comparison/" },
+    ]}
+  />
+
+  <header class="mb-6">
+    <h1 class="font-[var(--font-display)] text-3xl sm:text-4xl font-bold mb-2">
+      {GAME.title}: Editions Comparison
+    </h1>
+    <p class="text-[var(--color-muted)] text-lg">
+      Four editions, a wide price spread. Tell the tool what you care about and
+      it'll point you at the right one.
+    </p>
+  </header>
+
+  <!-- Interactive recommender -->
+  <section class="rounded-2xl border border-[var(--color-ink-3)] bg-[var(--color-ink-2)]/80 p-6 mb-8">
+    <p class="font-[var(--font-display)] text-sm uppercase tracking-wide text-[var(--color-dawn)] mb-3">
+      What matters most to you?
+    </p>
+    <div id="ed-chips" class="flex flex-wrap gap-2">
+      {[
+        { v: "price", t: "Lowest price" },
+        { v: "lore", t: "Soundtrack & lore" },
+        { v: "physical", t: "Physical goodies" },
+        { v: "collector", t: "Collector items" },
+      ].map((c) => (
+        <button data-v={c.v} class="ed-chip rounded-full border border-[var(--color-ink-3)] px-4 py-1.5 text-sm text-[var(--color-muted)] hover:border-[var(--color-dawn)] transition-colors">{c.t}</button>
+      ))}
+    </div>
+    <p id="ed-reco" class="mt-4 text-[var(--color-parchment)]">
+      Pick one or more above for a recommendation.
+    </p>
+  </section>
+
+  <!-- Crawlable comparison matrix -->
+  <div class="overflow-x-auto rounded-xl border border-[var(--color-ink-3)]">
+    <table class="w-full text-sm border-collapse min-w-[640px]">
+      <thead>
+        <tr class="bg-[var(--color-ink-3)]">
+          <th class="text-left p-3 font-[var(--font-display)] text-[var(--color-dawn)]">Feature</th>
+          {EDITIONS.map((e) => (
+            <th data-ed={e.id} class="ed-col p-3 text-center font-[var(--font-display)] text-[var(--color-parchment)]">
+              <div>{e.name}</div>
+              <div class="text-xs font-normal text-[var(--color-muted)]">{e.price}</div>
+            </th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="border-t border-[var(--color-ink-3)]">
+          <td class="p-3 text-[var(--color-muted)]">Format</td>
+          {EDITIONS.map((e) => (
+            <td data-ed={e.id} class="ed-col p-3 text-center text-[var(--color-muted)]">{e.format}</td>
+          ))}
+        </tr>
+        {FEATURES.map((f) => (
+          <tr class="border-t border-[var(--color-ink-3)]">
+            <td class="p-3 text-[var(--color-parchment)]">{f.label}</td>
+            {EDITIONS.map((e) => (
+              <td data-ed={e.id} class="ed-col p-3 text-center">
+                {e.has.includes(f.key) ? (
+                  <span class="text-[var(--color-dawn)]" aria-label="Included">✓</span>
+                ) : (
+                  <span class="text-[var(--color-ink-3)]" aria-label="Not included">—</span>
+                )}
+              </td>
+            ))}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 mt-6">
+    {EDITIONS.map((e) => (
+      <div data-ed={e.id} class="ed-card rounded-xl border border-[var(--color-ink-3)] bg-[var(--color-ink-2)]/60 p-4">
+        <p class="font-[var(--font-display)] text-lg text-[var(--color-parchment)]">{e.name}</p>
+        <p class="text-[var(--color-dawn)] font-semibold">{e.price}</p>
+        <p class="mt-2 text-sm text-[var(--color-muted)]">{e.note}</p>
+      </div>
+    ))}
+  </div>
+
+  <div class="mt-10">
+    <AdSlot />
+  </div>
+
+  <section class="prose-content mt-10">
+    <h2>Which edition should you buy?</h2>
+    <ul>
+      <li><strong>Most players → Standard.</strong> You get the complete game; nothing in the upgrades changes how it plays.</li>
+      <li><strong>Lore &amp; music fans → Eclipse.</strong> The +$10 buys the soundtrack, comic, and an in-world compendium.</li>
+      <li><strong>Collectors → Collector's.</strong> Only worth the jump if you specifically want the 9″ Coen figurine and SteelBook.</li>
+    </ul>
+    <p>
+      For the full breakdown, release date, and pre-order details, see our
+      <a href="/guides/release-date-platforms-editions/">Release Date, Platforms &amp; Editions</a> guide.
+      Prices are publisher-listed and may vary by region and retailer.
+    </p>
+  </section>
+
+  <JsonLd
+    schema={{
+      "@context": "https://schema.org",
+      "@type": "VideoGame",
+      name: GAME.title,
+      offers: EDITIONS.filter((e) => e.priceNum > 0 && e.price.startsWith("$")).map((e) => ({
+        "@type": "Offer",
+        name: `${e.name} Edition`,
+        price: e.priceNum,
+        priceCurrency: "USD",
+      })),
+    }}
+  />
+</BaseLayout>
+
+<script>
+  // Editions recommender: toggle priority chips, highlight the matching edition.
+  function initEditions() {
+    const chips = document.getElementById("ed-chips");
+    if (!chips || chips.dataset.bound === "1") return;
+    chips.dataset.bound = "1";
+    const reco = document.getElementById("ed-reco");
+    const active = new Set<string>();
+
+    // priority -> recommended edition id + one-line reason
+    const MAP: Record<string, { id: string; why: string }> = {
+      price: { id: "standard", why: "the Standard Edition is the cheapest way into the full game." },
+      lore: { id: "eclipse", why: "the Eclipse Edition adds the soundtrack, comic, and digital compendium for +$10." },
+      physical: { id: "dayone", why: "the Day One Edition gets you the SteelBook and physical world map." },
+      collector: { id: "collectors", why: "the Collector's Edition includes the 9″ Coen figurine and physical compendium." },
+    };
+    const NAME: Record<string, string> = {
+      standard: "Standard", eclipse: "Eclipse", dayone: "Day One", collectors: "Collector's",
+    };
+
+    const highlight = (id: string | null) => {
+      document.querySelectorAll<HTMLElement>(".ed-col, .ed-card").forEach((el) => {
+        const on = id !== null && el.dataset.ed === id;
+        el.style.background = on ? "color-mix(in srgb, var(--color-dawn) 14%, transparent)" : "";
+        el.style.boxShadow = on && el.classList.contains("ed-card") ? "inset 0 0 0 1px var(--color-dawn)" : "";
+      });
+    };
+
+    const update = () => {
+      if (active.size === 0) {
+        reco && (reco.textContent = "Pick one or more above for a recommendation.");
+        highlight(null);
+        return;
+      }
+      // If collector priorities stack up (3+ wants), nudge to Collector's.
+      let id: string;
+      if (active.size >= 3) id = "collectors";
+      else if (active.has("collector")) id = "collectors";
+      else if (active.has("physical") && active.has("lore")) id = "collectors";
+      else id = MAP[[...active][active.size - 1]].id;
+
+      const reasons = [...active].map((v) => MAP[v].why);
+      if (reco) {
+        reco.innerHTML = `Our pick: <strong class="text-[var(--color-dawn)]">${NAME[id]} Edition</strong> — ` +
+          (id === "collectors" && active.size >= 3
+            ? "you want a bit of everything, so the all-in edition is the cleanest buy."
+            : reasons[reasons.length - 1]);
+      }
+      highlight(id);
+    };
+
+    chips.querySelectorAll<HTMLButtonElement>(".ed-chip").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const v = btn.dataset.v!;
+        if (active.has(v)) {
+          active.delete(v);
+          btn.style.background = "";
+          btn.style.color = "";
+          btn.style.borderColor = "";
+        } else {
+          active.add(v);
+          btn.style.background = "color-mix(in srgb, var(--color-dawn) 18%, transparent)";
+          btn.style.color = "var(--color-parchment)";
+          btn.style.borderColor = "var(--color-dawn)";
+        }
+        update();
+      });
+    });
+  }
+
+  document.addEventListener("astro:page-load", initEditions);
+</script>

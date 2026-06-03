@@ -1,0 +1,131 @@
+---
+import { render } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Breadcrumbs from "../../components/Breadcrumbs.astro";
+import AdSlot from "../../components/AdSlot.astro";
+import JsonLd from "../../components/JsonLd.astro";
+import { getCharacters } from "../../lib/utils";
+import { GAME } from "../../consts";
+
+export async function getStaticPaths() {
+  const characters = await getCharacters();
+  return characters.map((entry) => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const d = entry.data;
+const url = `/characters/${entry.id}/`;
+
+const factionLabel: Record<string, string> = {
+  protagonist: "Protagonist",
+  vampire: "Vampire",
+  human: "Human",
+  ally: "Ally",
+  unknown: "Unknown",
+};
+---
+
+<BaseLayout
+  title={`${d.name} — ${d.role}`}
+  description={d.description}
+  image={d.image}
+  type="article"
+  publishedTime={d.publishDate}
+  modifiedTime={d.updatedDate}
+>
+  <Breadcrumbs
+    items={[
+      { name: "Home", url: "/" },
+      { name: "Characters", url: "/characters/" },
+      { name: d.name, url },
+    ]}
+  />
+
+  <article>
+    <header class="mb-6">
+      <p class="uppercase tracking-[0.2em] text-xs text-[var(--color-dawn)] mb-2">
+        {factionLabel[d.faction]} {d.status === "rumored" && "· Rumored"}
+      </p>
+      <h1 class="font-[var(--font-display)] text-3xl sm:text-5xl font-bold leading-tight">
+        {d.name}
+      </h1>
+      <p class="mt-2 text-lg text-[var(--color-muted)]">{d.role}</p>
+    </header>
+
+    {d.image && (
+      <div class="aspect-[16/9] overflow-hidden rounded-xl border border-[var(--color-ink-3)] mb-8">
+        <img src={d.image} alt={d.imageAlt ?? d.name} class="w-full h-full object-cover" />
+      </div>
+    )}
+
+    <div class="grid gap-8 md:grid-cols-[1fr_260px]">
+      <div>
+        {d.quote && (
+          <blockquote class="mb-6 border-l-2 border-[var(--color-blood)] pl-4 font-[var(--font-display)] text-xl italic text-[var(--color-parchment)]">
+            “{d.quote}”
+          </blockquote>
+        )}
+        <div class="prose-content">
+          <Content />
+        </div>
+      </div>
+
+      <aside class="md:sticky md:top-20 self-start space-y-4">
+        {d.facts.length > 0 && (
+          <div class="rounded-xl border border-[var(--color-ink-3)] bg-[var(--color-ink-2)]/80 p-4">
+            <p class="font-[var(--font-display)] text-sm uppercase tracking-wide text-[var(--color-dawn)] mb-3">
+              Quick Facts
+            </p>
+            <dl class="space-y-2 text-sm">
+              {d.facts.map((f) => (
+                <div>
+                  <dt class="text-[var(--color-muted)]">{f.label}</dt>
+                  <dd class="text-[var(--color-parchment)]">{f.value}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        )}
+        {d.sources.length > 0 && (
+          <div class="rounded-xl border border-[var(--color-ink-3)] bg-[var(--color-ink-2)]/80 p-4">
+            <p class="font-[var(--font-display)] text-sm uppercase tracking-wide text-[var(--color-dawn)] mb-3">
+              Sources
+            </p>
+            <ul class="space-y-1 text-sm">
+              {d.sources.map((s) => (
+                <li>
+                  <a href={s.url} rel="nofollow noopener" target="_blank" class="text-[var(--color-blood-bright)] hover:text-[var(--color-dawn)] underline underline-offset-2">
+                    {s.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+        <a href="/characters/" class="block text-center rounded border border-[var(--color-ink-3)] px-4 py-2 text-sm text-[var(--color-muted)] hover:border-[var(--color-dawn)] hover:text-[var(--color-parchment)] transition-colors">
+          ← All characters
+        </a>
+      </aside>
+    </div>
+  </article>
+
+  <div class="mt-10">
+    <AdSlot />
+  </div>
+
+  <JsonLd
+    schema={{
+      "@context": "https://schema.org",
+      "@type": "Article",
+      headline: `${d.name} — ${d.role}`,
+      description: d.description,
+      about: { "@type": "VideoGame", name: GAME.title },
+      datePublished: d.publishDate.toISOString(),
+      dateModified: (d.updatedDate ?? d.publishDate).toISOString(),
+    }}
+  />
+</BaseLayout>

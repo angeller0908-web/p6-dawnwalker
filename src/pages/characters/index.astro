@@ -1,0 +1,79 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Breadcrumbs from "../../components/Breadcrumbs.astro";
+import AdSlot from "../../components/AdSlot.astro";
+import { getCharacters } from "../../lib/utils";
+import { GAME } from "../../consts";
+
+const characters = await getCharacters();
+
+const factionLabel: Record<string, string> = {
+  protagonist: "Protagonist",
+  vampire: "Vampire",
+  human: "Human",
+  ally: "Ally",
+  unknown: "Unknown",
+};
+---
+
+<BaseLayout
+  title="Characters & Cast"
+  description={`Who's who in ${GAME.title} — profiles of Coen, the vampire lord Brencis, and the cast of Vale Sangora.`}
+>
+  <Breadcrumbs items={[{ name: "Home", url: "/" }, { name: "Characters", url: "/characters/" }]} />
+
+  <header class="mb-8">
+    <h1 class="font-[var(--font-display)] text-3xl sm:text-4xl font-bold mb-2">
+      {GAME.title} Characters
+    </h1>
+    <p class="text-[var(--color-muted)] text-lg">
+      The cast of Vale Sangora — protagonists, the vampire court, and the people
+      caught between them. Profiles grow as Rebel Wolves reveals more.
+    </p>
+  </header>
+
+  {characters.length === 0 ? (
+    <p class="text-[var(--color-muted)]">Character profiles are on the way. Check back soon.</p>
+  ) : (
+    <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      {characters.map((c) => (
+        <article class="card-glow spotlight reveal group relative rounded-lg border border-[var(--color-ink-3)] bg-[var(--color-ink-2)]/90 overflow-hidden">
+          <a href={`/characters/${c.id}/`} class="block">
+            {c.data.image ? (
+              <div class="aspect-[16/9] overflow-hidden bg-[var(--color-ink-3)]">
+                <img
+                  src={c.data.image}
+                  alt={c.data.imageAlt ?? c.data.name}
+                  loading="lazy"
+                  decoding="async"
+                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+              </div>
+            ) : (
+              <div class="aspect-[16/9] banner" style={`--from:var(--color-ink-3);--to:var(--color-ink-2);--accent:var(--color-blood)`}>
+                <span class="banner-glyph">{c.data.name.charAt(0)}</span>
+              </div>
+            )}
+            <div class="p-4">
+              <div class="flex items-center gap-2 text-xs mb-2">
+                <span class="uppercase tracking-wide text-[var(--color-dawn)]">{factionLabel[c.data.faction]}</span>
+                {c.data.status === "rumored" && (
+                  <span class="rounded bg-[var(--color-ink-3)] px-1.5 py-0.5 text-[10px] text-[var(--color-muted)]">Rumored</span>
+                )}
+              </div>
+              <h2 class="font-[var(--font-display)] text-lg text-[var(--color-parchment)] group-hover:text-[var(--color-dawn)] transition-colors">
+                {c.data.name}
+              </h2>
+              <p class="text-sm text-[var(--color-dawn)] mb-1">{c.data.role}</p>
+              <p class="text-sm text-[var(--color-muted)] line-clamp-2">{c.data.description}</p>
+            </div>
+          </a>
+        </article>
+      ))}
+    </div>
+  )}
+
+  <div class="mt-10">
+    <AdSlot />
+  </div>
+</BaseLayout>

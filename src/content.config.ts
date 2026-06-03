@@ -52,4 +52,34 @@ const guides = defineCollection({
   }),
 });
 
-export const collections = { news, guides };
+const characters = defineCollection({
+  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/characters" }),
+  schema: z.object({
+    /** Character display name — the codex headline. */
+    name: z.string(),
+    /** Short role/epithet, e.g. "The Reluctant Dawnwalker". */
+    role: z.string(),
+    description: z.string(),
+    image: z.string().optional(),
+    imageAlt: z.string().optional(),
+    /** Allegiance grouping for filtering on the index. */
+    faction: z
+      .enum(["protagonist", "vampire", "human", "ally", "unknown"])
+      .default("unknown"),
+    /** Whether confirmed by official material or still community-reported. */
+    status: z.enum(["confirmed", "rumored"]).default("confirmed"),
+    /** A pull-quote shown on the profile, if any. */
+    quote: z.string().optional(),
+    /** Quick-facts shown in the profile sidebar: label → value. */
+    facts: z.array(z.object({ label: z.string(), value: z.string() })).default([]),
+    tags: z.array(z.string()).default([]),
+    /** Lower numbers sort first; protagonists/major characters lead. */
+    order: z.number().default(50),
+    publishDate: z.coerce.date(),
+    updatedDate: z.coerce.date().optional(),
+    draft: z.boolean().default(false),
+    sources: z.array(z.object({ label: z.string(), url: z.string().url() })).default([]),
+  }),
+});
+
+export const collections = { news, guides, characters };

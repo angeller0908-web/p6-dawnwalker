@@ -31,3 +31,12 @@ export async function getGuides(): Promise<CollectionEntry<"guides">[]> {
   const entries = await getCollection("guides", isPublished);
   return entries.sort(byDateDesc);
 }
+
+/** Published character profiles, ordered by `order` then name. */
+export async function getCharacters(): Promise<CollectionEntry<"characters">[]> {
+  const entries = await getCollection("characters", isPublished);
+  return entries.sort(
+    (a, b) =>
+      a.data.order - b.data.order || a.data.name.localeCompare(b.data.name),
+  );
+}
