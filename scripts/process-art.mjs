@@ -35,6 +35,8 @@ const articleSlugs = [
   // Character key art + tools artwork
   "coen-portrait",
   "brencis-portrait",
+  "lunka-portrait",
+  "esme-portrait",
   "vale-sangora-map",
 ];
 
