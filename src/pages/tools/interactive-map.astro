@@ -38,20 +38,17 @@ const days = Math.max(0, Math.floor((release.valueOf() - Date.now()) / 86_400_00
 
   <!-- Teaser map frame -->
   <div class="relative aspect-[16/9] overflow-hidden rounded-2xl border border-[var(--color-ink-3)] bg-[var(--color-ink-2)]">
-    <div class="absolute inset-0 opacity-40" style="background:
-      radial-gradient(60% 50% at 30% 35%, color-mix(in srgb, var(--color-blood) 30%, transparent), transparent 60%),
-      radial-gradient(50% 60% at 72% 65%, color-mix(in srgb, var(--color-dawn) 24%, transparent), transparent 60%),
-      repeating-linear-gradient(0deg, transparent 0 38px, color-mix(in srgb, var(--color-ink-3) 60%, transparent) 38px 39px),
-      repeating-linear-gradient(90deg, transparent 0 38px, color-mix(in srgb, var(--color-ink-3) 60%, transparent) 38px 39px);">
-    </div>
-    <div class="absolute inset-0 grid place-items-center text-center px-6">
-      <div>
-        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--color-dawn)" stroke-width="1.6" class="mx-auto mb-3" aria-hidden="true">
-          <path d="M9 3 3 6v15l6-3 6 3 6-3V3l-6 3-6-3Z" /><path d="M9 3v15M15 6v15" />
-        </svg>
-        <p class="font-[var(--font-display)] text-xl text-[var(--color-parchment)]">Vale Sangora — mapping in progress</p>
-        <p class="text-sm text-[var(--color-muted)] mt-1">Interactive markers unlock at launch</p>
-      </div>
+    <img
+      src="/images/vale-sangora-map.jpg"
+      alt="An aged parchment map of the fog-shrouded valley of Vale Sangora"
+      class="absolute inset-0 w-full h-full object-cover opacity-70"
+      loading="lazy"
+      decoding="async"
+    />
+    <div class="absolute inset-0 bg-gradient-to-t from-[var(--color-ink)] via-transparent to-transparent"></div>
+    <div class="absolute inset-x-0 bottom-0 p-5 text-center">
+      <p class="font-[var(--font-display)] text-xl text-[var(--color-parchment)]">Vale Sangora — mapping in progress</p>
+      <p class="text-sm text-[var(--color-muted)] mt-1">Interactive markers unlock at launch</p>
     </div>
   </div>
 

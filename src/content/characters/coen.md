@@ -5,8 +5,8 @@ description: "Coen is the protagonist of The Blood of Dawnwalker — a peasant m
 faction: "protagonist"
 status: "confirmed"
 quote: "Human by day, vampire by night, belonging to neither world."
-image: "/images/story-setting-characters.jpg"
-imageAlt: "A hooded wanderer on a misty mountain pass at blood-red dawn"
+image: "/images/coen-portrait.jpg"
+imageAlt: "A hooded young man, half his face in dawn light and half in shadow, on a misty mountainside"
 facts:
   - label: "Role"
     value: "Protagonist (playable)"

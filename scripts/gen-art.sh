@@ -54,6 +54,13 @@ gen "vale-sangora-world-guide"     "A sweeping panoramic vista over a fog-filled
 gen "launch-date-september-3-confirmed" "A triumphant blood-red dawn breaking over a vast gothic mountain valley, golden rays piercing the mist, a castle silhouette catching the first light."
 gen "how-choice-driven-is-dawnwalker"   "A single cloaked figure standing at a fork where two roads split beneath a dramatic divided sky, warm daylight on one side and starlit night on the other."
 
+# ---- Character key art (original, NOT the game's character designs) ----
+gen "coen-portrait"    "Cinematic character key art of a brooding young medieval peasant man in a weathered hooded cloak, three-quarter view, half his face lit by warm dawn light and half in cold blue shadow, faint pale silver scarring at his throat, standing on a misty mountainside at blood-red dawn, an original character not based on any existing game."
+gen "brencis-portrait" "Cinematic character key art of an ancient aristocratic vampire lord with gaunt pale features and piercing cold eyes, wearing ornate dark Roman-influenced gothic regalia, seated upon a shadowy carved throne in a candlelit hall, regal and menacing, dramatic crimson rim light, an original character not based on any existing game."
+
+# ---- Tools: parchment map for the interactive-map teaser ----
+gen "vale-sangora-map" "An aged hand-drawn antique parchment map of a fog-shrouded Carpathian mountain valley seen from above, ink-drawn forests, winding rivers, tiny medieval village icons and a castle marked on a crag, a decorative compass rose and ornate border, weathered and stained vellum, painted cartographic style."
+
 # ---- Site-wide ----
 gen "hero"        "An epic wide cinematic vista of a vast Carpathian valley at blood-red dawn, a great gothic castle on a distant crag, layers of mist and jagged pine ridges, very dark and atmospheric with deep shadow at the top and bottom edges."
 gen "og-base"     "An epic wide cinematic vista of a gothic mountain valley at blood-red dawn with a distant castle and dramatic god rays through mist, dark moody composition with empty darker space in the lower third."

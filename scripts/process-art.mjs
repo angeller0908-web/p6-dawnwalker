@@ -32,6 +32,10 @@ const articleSlugs = [
   "vale-sangora-world-guide",
   "launch-date-september-3-confirmed",
   "how-choice-driven-is-dawnwalker",
+  // Character key art + tools artwork
+  "coen-portrait",
+  "brencis-portrait",
+  "vale-sangora-map",
 ];
 
 const raw = (slug) => join(RAW, `${slug}.png`);

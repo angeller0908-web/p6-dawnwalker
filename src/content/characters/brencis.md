@@ -5,8 +5,8 @@ description: "Brencis is the antagonist of The Blood of Dawnwalker — an ancien
 faction: "vampire"
 status: "confirmed"
 quote: "Born in the Roman Empire; a thousand years later, the master of the valley."
-image: "/images/brencis-and-vampire-officers.jpg"
-imageAlt: "A gothic castle silhouette under a blood-red sky"
+image: "/images/brencis-portrait.jpg"
+imageAlt: "An ancient pale vampire lord in dark gothic regalia on a shadowy throne, lit by crimson light"
 facts:
   - label: "Role"
     value: "Primary antagonist"
