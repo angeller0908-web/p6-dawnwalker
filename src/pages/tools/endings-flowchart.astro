@@ -1,0 +1,90 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Breadcrumbs from "../../components/Breadcrumbs.astro";
+import AdSlot from "../../components/AdSlot.astro";
+import JsonLd from "../../components/JsonLd.astro";
+import { GAME } from "../../consts";
+
+const release = new Date(GAME.releaseDate);
+const days = Math.max(0, Math.floor((release.valueOf() - Date.now()) / 86_400_000));
+---
+
+<BaseLayout
+  title="Choices & Endings Flowchart (Launching Sep 3)"
+  description={`An interactive ${GAME.title} choices-and-endings flowchart — map every major decision, branch, and ending. Spoiler-aware, launching September 3, 2026.`}
+>
+  <Breadcrumbs
+    items={[
+      { name: "Home", url: "/" },
+      { name: "Tools", url: "/tools/" },
+      { name: "Choices & Endings Flowchart", url: "/tools/endings-flowchart/" },
+    ]}
+  />
+
+  <header class="mb-6">
+    <div class="inline-flex items-center gap-2 rounded-full border border-[var(--color-ink-3)] bg-[var(--color-ink-2)] px-3 py-1 text-xs text-[var(--color-dawn)] mb-3">
+      <span class="inline-block h-1.5 w-1.5 rounded-full bg-[var(--color-blood-bright)] animate-pulse"></span>
+      Flowchart goes live in <span>{days}</span> days
+    </div>
+    <h1 class="font-[var(--font-display)] text-3xl sm:text-4xl font-bold mb-2">
+      Choices &amp; Endings Flowchart
+    </h1>
+    <p class="text-[var(--color-muted)] text-lg max-w-2xl">
+      {GAME.title} is built on consequence — a narrative sandbox where major
+      decisions ripple into different outcomes. Our interactive flowchart will map
+      every branch and ending, with spoilers kept behind your control.
+    </p>
+  </header>
+
+  <!-- Teaser branch graphic -->
+  <div class="relative aspect-[16/9] overflow-hidden rounded-2xl border border-[var(--color-ink-3)] bg-[var(--color-ink-2)] grid place-items-center">
+    <svg viewBox="0 0 320 180" class="w-2/3 max-w-md opacity-60" fill="none" stroke="var(--color-dawn)" stroke-width="2" aria-hidden="true">
+      <circle cx="40" cy="90" r="10" fill="color-mix(in srgb, var(--color-blood) 40%, transparent)" />
+      <path d="M50 90 H120" />
+      <circle cx="130" cy="90" r="8" />
+      <path d="M138 90 q40 -50 80 -50 M138 90 q40 50 80 50 M138 90 H210" stroke-dasharray="4 4" />
+      <circle cx="220" cy="40" r="7" /><circle cx="220" cy="90" r="7" /><circle cx="220" cy="140" r="7" />
+      <path d="M227 40 H280 M227 90 H280 M227 140 H280" stroke-dasharray="4 4" />
+      <rect x="280" y="32" width="16" height="16" rx="3" /><rect x="280" y="82" width="16" height="16" rx="3" /><rect x="280" y="132" width="16" height="16" rx="3" />
+    </svg>
+    <p class="absolute bottom-4 text-sm text-[var(--color-muted)]">Branch data unlocks at launch</p>
+  </div>
+
+  <div class="mt-8">
+    <AdSlot />
+  </div>
+
+  <section class="prose-content mt-10">
+    <h2>What the flowchart will map</h2>
+    <ul>
+      <li><strong>Major decision points</strong> — the choices that actually change the story, not just dialogue flavour.</li>
+      <li><strong>Branch outcomes</strong> — where each path leads and who it affects.</li>
+      <li><strong>Every ending</strong> — the requirements to reach each one.</li>
+      <li><strong>Spoiler control</strong> — sections stay hidden until you choose to reveal them, so you can plan without ruining the story.</li>
+    </ul>
+
+    <h2>Why it isn't live yet</h2>
+    <p>
+      A real branch-and-ending map can only be built by playing through the game's
+      choices — so the data arrives with the launch. We're staking out the
+      framework now. In the meantime, the systems that drive those branches are
+      already worth understanding: see our
+      <a href="/guides/infamy-system-explained/">Infamy System Explained</a> and
+      <a href="/guides/story-setting-characters/">Story, Setting &amp; Characters</a>
+      guides, and our spoiler-free
+      <a href="/guides/everything-we-know/">Everything We Know</a> hub.
+    </p>
+    <p>
+      The flowchart launches with the game on <strong>September 3, 2026</strong>.
+    </p>
+  </section>
+
+  <JsonLd
+    schema={{
+      "@context": "https://schema.org",
+      "@type": "Article",
+      headline: "Choices & Endings Flowchart",
+      about: { "@type": "VideoGame", name: GAME.title },
+    }}
+  />
+</BaseLayout>

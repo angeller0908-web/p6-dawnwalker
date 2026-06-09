@@ -1,0 +1,93 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Breadcrumbs from "../../components/Breadcrumbs.astro";
+import AdSlot from "../../components/AdSlot.astro";
+import JsonLd from "../../components/JsonLd.astro";
+import { GAME } from "../../consts";
+
+const release = new Date(GAME.releaseDate);
+const days = Math.max(0, Math.floor((release.valueOf() - Date.now()) / 86_400_000));
+---
+
+<BaseLayout
+  title="Interactive Map of Vale Sangora (Launching Sep 3)"
+  description={`An interactive ${GAME.title} map of Vale Sangora — collectibles, secrets, side quests, and points of interest. Launches with the game on September 3, 2026.`}
+>
+  <Breadcrumbs
+    items={[
+      { name: "Home", url: "/" },
+      { name: "Tools", url: "/tools/" },
+      { name: "Interactive Map", url: "/tools/interactive-map/" },
+    ]}
+  />
+
+  <header class="mb-6">
+    <div class="inline-flex items-center gap-2 rounded-full border border-[var(--color-ink-3)] bg-[var(--color-ink-2)] px-3 py-1 text-xs text-[var(--color-dawn)] mb-3">
+      <span class="inline-block h-1.5 w-1.5 rounded-full bg-[var(--color-blood-bright)] animate-pulse"></span>
+      Map goes live in <span>{days}</span> days
+    </div>
+    <h1 class="font-[var(--font-display)] text-3xl sm:text-4xl font-bold mb-2">
+      Interactive Map of Vale Sangora
+    </h1>
+    <p class="text-[var(--color-muted)] text-lg max-w-2xl">
+      A full interactive map of {GAME.title}'s valley — every collectible, secret,
+      side quest, and point of interest, filterable and trackable. It unlocks the
+      moment we can map the world at launch.
+    </p>
+  </header>
+
+  <!-- Teaser map frame -->
+  <div class="relative aspect-[16/9] overflow-hidden rounded-2xl border border-[var(--color-ink-3)] bg-[var(--color-ink-2)]">
+    <div class="absolute inset-0 opacity-40" style="background:
+      radial-gradient(60% 50% at 30% 35%, color-mix(in srgb, var(--color-blood) 30%, transparent), transparent 60%),
+      radial-gradient(50% 60% at 72% 65%, color-mix(in srgb, var(--color-dawn) 24%, transparent), transparent 60%),
+      repeating-linear-gradient(0deg, transparent 0 38px, color-mix(in srgb, var(--color-ink-3) 60%, transparent) 38px 39px),
+      repeating-linear-gradient(90deg, transparent 0 38px, color-mix(in srgb, var(--color-ink-3) 60%, transparent) 38px 39px);">
+    </div>
+    <div class="absolute inset-0 grid place-items-center text-center px-6">
+      <div>
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--color-dawn)" stroke-width="1.6" class="mx-auto mb-3" aria-hidden="true">
+          <path d="M9 3 3 6v15l6-3 6 3 6-3V3l-6 3-6-3Z" /><path d="M9 3v15M15 6v15" />
+        </svg>
+        <p class="font-[var(--font-display)] text-xl text-[var(--color-parchment)]">Vale Sangora — mapping in progress</p>
+        <p class="text-sm text-[var(--color-muted)] mt-1">Interactive markers unlock at launch</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-8">
+    <AdSlot />
+  </div>
+
+  <section class="prose-content mt-10">
+    <h2>What the interactive map will include</h2>
+    <ul>
+      <li><strong>Collectibles &amp; secrets</strong> — every hidden item, lore note, and stash, with filters to hide what you've found.</li>
+      <li><strong>Side quests &amp; events</strong> — where they start and what they lead to.</li>
+      <li><strong>Points of interest</strong> — settlements, vampire strongholds, and key story locations across the valley.</li>
+      <li><strong>Progress tracking</strong> — tick off markers as you go; your progress saves in your browser.</li>
+    </ul>
+
+    <h2>Why it isn't live yet</h2>
+    <p>
+      An interactive map needs the real in-game world — its layout and the exact
+      locations of everything on it — which only exists once the game is out. We're
+      building the framework now so it's ready to fill in on day one. Until then,
+      our <a href="/guides/vale-sangora-world-guide/">Vale Sangora World Guide</a>
+      covers everything confirmed about the setting, and the
+      <a href="/news/">news feed</a> tracks every new reveal.
+    </p>
+    <p>
+      The map launches with the game on <strong>September 3, 2026</strong>.
+    </p>
+  </section>
+
+  <JsonLd
+    schema={{
+      "@context": "https://schema.org",
+      "@type": "Article",
+      headline: "Interactive Map of Vale Sangora",
+      about: { "@type": "VideoGame", name: GAME.title },
+    }}
+  />
+</BaseLayout>

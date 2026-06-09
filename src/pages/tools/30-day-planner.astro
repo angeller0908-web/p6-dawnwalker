@@ -1,0 +1,155 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Breadcrumbs from "../../components/Breadcrumbs.astro";
+import AdSlot from "../../components/AdSlot.astro";
+import JsonLd from "../../components/JsonLd.astro";
+import { GAME } from "../../consts";
+
+const release = new Date(GAME.releaseDate);
+const days = Math.max(0, Math.floor((release.valueOf() - Date.now()) / 86_400_000));
+---
+
+<BaseLayout
+  title="30-Day Route Planner (Launching Sep 3)"
+  description={`Plan how to spend your 30 days in ${GAME.title} — how the time limit really works, how to prioritise, and a day-by-day route planner that unlocks at launch.`}
+>
+  <Breadcrumbs
+    items={[
+      { name: "Home", url: "/" },
+      { name: "Tools", url: "/tools/" },
+      { name: "30-Day Route Planner", url: "/tools/30-day-planner/" },
+    ]}
+  />
+
+  <header class="mb-6">
+    <div class="inline-flex items-center gap-2 rounded-full border border-[var(--color-ink-3)] bg-[var(--color-ink-2)] px-3 py-1 text-xs text-[var(--color-dawn)] mb-3">
+      <span class="inline-block h-1.5 w-1.5 rounded-full bg-[var(--color-blood-bright)] animate-pulse"></span>
+      Full planner unlocks in <span>{days}</span> days
+    </div>
+    <h1 class="font-[var(--font-display)] text-3xl sm:text-4xl font-bold mb-2">
+      The 30-Day Route Planner
+    </h1>
+    <p class="text-[var(--color-muted)] text-lg max-w-2xl">
+      Coen has roughly 30 days to save his family — and the order you tackle
+      things matters. When the quests are mapped at launch, this planner lets you
+      route your whole run. For now, here's how the clock actually works and how
+      to think about it.
+    </p>
+  </header>
+
+  <!-- Interactive approach picker (evergreen advice; works today) -->
+  <section class="rounded-2xl border border-[var(--color-ink-3)] bg-[var(--color-ink-2)]/80 p-6 mb-8">
+    <p class="font-[var(--font-display)] text-sm uppercase tracking-wide text-[var(--color-dawn)] mb-3">
+      What's your approach to the clock?
+    </p>
+    <div id="plan-chips" class="flex flex-wrap gap-2">
+      {[
+        { v: "story", t: "Story first" },
+        { v: "explore", t: "Explore first" },
+        { v: "power", t: "Power first" },
+      ].map((c) => (
+        <button data-v={c.v} class="plan-chip rounded-full border border-[var(--color-ink-3)] px-4 py-1.5 text-sm text-[var(--color-muted)] hover:border-[var(--color-dawn)] transition-colors">{c.t}</button>
+      ))}
+    </div>
+    <p id="plan-advice" class="mt-4 text-[var(--color-parchment)]">
+      Pick an approach for a strategy note.
+    </p>
+  </section>
+
+  <!-- Teaser timeline: 30 locked day-slots, filled with real routing at launch -->
+  <section class="rounded-2xl border border-[var(--color-ink-3)] bg-[var(--color-ink-2)]/80 p-5 sm:p-6 mb-8">
+    <div class="flex items-center justify-between mb-4">
+      <p class="font-[var(--font-display)] text-lg text-[var(--color-parchment)]">Your 30 days</p>
+      <span class="text-xs text-[var(--color-muted)]">Routing unlocks at launch</span>
+    </div>
+    <div class="grid grid-cols-6 sm:grid-cols-10 gap-2">
+      {Array.from({ length: 30 }).map((_, i) => (
+        <div
+          class="aspect-square rounded-md border border-dashed border-[var(--color-ink-3)] bg-[var(--color-ink)]/40 flex items-center justify-center text-xs text-[var(--color-muted)] select-none"
+          title="Quest routing unlocks at launch"
+        >
+          {i + 1}
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <div class="mt-8">
+    <AdSlot />
+  </div>
+
+  <section class="prose-content mt-10">
+    <h2>Is the 30-day limit a punishing real-time clock?</h2>
+    <p>
+      No — and this is the single most-asked question about the game. The 30 days
+      frame the story's stakes (Coen racing to save his family), but the director
+      has publicly said it is <strong>not</strong> a stressful real-time countdown
+      that fails you the moment time runs out. Time advances through story
+      progress and major actions rather than ticking down while you stand still.
+      We break down exactly what's confirmed in our
+      <a href="/guides/30-day-time-limit-explained/">30-Day Time Limit Explained</a> guide.
+    </p>
+
+    <h2>How to think about prioritising</h2>
+    <p>
+      Until the quests are mapped, the evergreen advice is simple: the clock
+      rewards <em>intent</em>. Decide what kind of run you want — chase the main
+      story, explore the valley, or build up Coen's power first — and the planner
+      above gives you a starting strategy for each. The
+      <a href="/guides/infamy-system-explained/">infamy system</a> and the
+      <a href="/tools/day-night-abilities/">day/night split</a> both feed into how
+      efficiently you can spend each day.
+    </p>
+
+    <h2>What the full planner will do</h2>
+    <ul>
+      <li>A day-by-day timeline you can fill with the real story beats and side quests.</li>
+      <li>Time-cost estimates for major actions, so you can see what fits in 30 days.</li>
+      <li>Routes for common goals — "save everyone", "fastest main story", "max exploration".</li>
+      <li>Shareable plans you can send to friends.</li>
+    </ul>
+    <p>
+      It all goes live on <strong>September 3, 2026</strong>. Bookmark this page
+      and check back on launch day.
+    </p>
+  </section>
+
+  <JsonLd
+    schema={{
+      "@context": "https://schema.org",
+      "@type": "Article",
+      headline: "The 30-Day Route Planner",
+      about: { "@type": "VideoGame", name: GAME.title },
+    }}
+  />
+</BaseLayout>
+
+<script>
+  // Approach picker — evergreen strategy notes that work pre-launch.
+  function initPlanner() {
+    const chips = document.getElementById("plan-chips");
+    if (!chips || chips.dataset.bound === "1") return;
+    chips.dataset.bound = "1";
+    const advice = document.getElementById("plan-advice");
+
+    const ADVICE: Record<string, string> = {
+      story: "Story first: follow the main thread toward saving your family and let the clock serve the narrative. Best if you want a focused, emotionally-driven run and don't want to worry about the timer.",
+      explore: "Explore first: the valley is a narrative sandbox, so bank side content and map knowledge early — just remember major story actions are what move time, so exploring between beats is the safe window.",
+      power: "Power first: lean into Coen's vampire side and the skill trees early so later obstacles fold quickly. Watch your infamy — more power often means more attention.",
+    };
+
+    chips.querySelectorAll<HTMLButtonElement>(".plan-chip").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        chips.querySelectorAll<HTMLButtonElement>(".plan-chip").forEach((b) => {
+          const on = b === btn;
+          b.style.background = on ? "color-mix(in srgb, var(--color-dawn) 18%, transparent)" : "";
+          b.style.color = on ? "var(--color-parchment)" : "";
+          b.style.borderColor = on ? "var(--color-dawn)" : "";
+        });
+        if (advice) advice.textContent = ADVICE[btn.dataset.v!];
+      });
+    });
+  }
+
+  document.addEventListener("astro:page-load", initPlanner);
+</script>

@@ -4,75 +4,112 @@ import Breadcrumbs from "../../components/Breadcrumbs.astro";
 import AdSlot from "../../components/AdSlot.astro";
 import { GAME } from "../../consts";
 
-const tools = [
+const liveTools = [
   {
     href: "/tools/which-dawnwalker-are-you/",
     title: "Which Dawnwalker Are You?",
     desc: "A quick personality quiz that matches your instincts to a Dawnwalker playstyle — predator, penitent, schemer, or wanderer.",
     glyph: "☾",
     tag: "Quiz",
-    live: true,
+  },
+  {
+    href: "/tools/day-night-abilities/",
+    title: "Day vs Night Abilities",
+    desc: "Compare Coen's human day form and vampire night form side by side — and flip the whole site to that time of day.",
+    glyph: "☀",
+    tag: "Reference",
   },
   {
     href: "/tools/editions-comparison/",
     title: "Editions Comparison",
-    desc: "Compare the Standard, Eclipse, Day One, and Collector's editions side by side, filter by what you care about, and see which is worth it.",
+    desc: "Compare the Standard, Eclipse, Day One, and Collector's editions, filter by what you care about, and see which is worth it.",
     glyph: "⚖",
     tag: "Buyer's tool",
-    live: true,
+  },
+];
+
+const comingTools = [
+  {
+    href: "/tools/30-day-planner/",
+    title: "30-Day Route Planner",
+    desc: "Plan how to spend Coen's 30 days. Learn how the clock really works now; route your whole run at launch.",
+    glyph: "⌛",
+    tag: "Launches Sep 3",
   },
   {
     href: "/tools/build-planner/",
     title: "Build & Skill Planner",
-    desc: "Plan your hex magic, vampire powers, and combat skills. The interactive planner unlocks the moment the skill trees are revealed at launch.",
+    desc: "Plan hex magic, vampire powers, and combat skills. The interactive planner unlocks when the skill trees are revealed.",
     glyph: "⚔",
     tag: "Launches Sep 3",
-    live: false,
+  },
+  {
+    href: "/tools/interactive-map/",
+    title: "Interactive Map",
+    desc: "Every collectible, secret, side quest, and point of interest across Vale Sangora — filterable and trackable.",
+    glyph: "🗺",
+    tag: "Launches Sep 3",
+  },
+  {
+    href: "/tools/endings-flowchart/",
+    title: "Choices & Endings Flowchart",
+    desc: "Map every major decision, branch, and ending — with spoilers kept behind your control.",
+    glyph: "❖",
+    tag: "Launches Sep 3",
   },
 ];
 ---
 
 <BaseLayout
   title="Interactive Tools"
-  description={`Interactive ${GAME.title} tools — a playstyle quiz, an editions comparison, and a build planner launching on release day.`}
+  description={`Interactive ${GAME.title} tools — a playstyle quiz, day/night ability reference, editions comparison, and planners launching on release day.`}
 >
   <Breadcrumbs items={[{ name: "Home", url: "/" }, { name: "Tools", url: "/tools/" }]} />
 
   <header class="mb-8">
-    <h1 class="font-[var(--font-display)] text-3xl sm:text-4xl font-bold mb-2">
-      Tools
-    </h1>
+    <h1 class="font-[var(--font-display)] text-3xl sm:text-4xl font-bold mb-2">Tools</h1>
     <p class="text-[var(--color-muted)] text-lg">
-      Interactive companions for {GAME.title} — find your playstyle, pick the
-      right edition, and plan your build.
+      Interactive companions for {GAME.title} — find your playstyle, learn the
+      systems, pick the right edition, and plan your run.
     </p>
   </header>
 
-  <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-    {tools.map((t) => (
-      <a
-        href={t.href}
-        class="card-glow spotlight reveal group relative flex flex-col rounded-lg border border-[var(--color-ink-3)] bg-[var(--color-ink-2)]/90 p-6"
-      >
-        <div class="mb-4 flex items-center justify-between">
-          <span class="font-[var(--font-display)] text-4xl text-[var(--color-blood-bright)] opacity-80">{t.glyph}</span>
-          <span class:list={[
-            "rounded px-2 py-0.5 text-[10px] uppercase tracking-wide",
-            t.live ? "bg-[var(--color-blood)]/20 text-[var(--color-dawn)]" : "bg-[var(--color-ink-3)] text-[var(--color-muted)]",
-          ]}>{t.tag}</span>
-        </div>
-        <h2 class="font-[var(--font-display)] text-lg text-[var(--color-parchment)] group-hover:text-[var(--color-dawn)] transition-colors mb-1">
-          {t.title}
-        </h2>
-        <p class="text-sm text-[var(--color-muted)]">{t.desc}</p>
-        <span class="mt-4 text-sm text-[var(--color-dawn)]">
-          {t.live ? "Open tool →" : "Preview →"}
-        </span>
-      </a>
-    ))}
-  </div>
+  <section class="mb-10">
+    <h2 class="font-[var(--font-display)] text-xl text-[var(--color-dawn)] mb-4">Available now</h2>
+    <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      {liveTools.map((t) => (
+        <a href={t.href} class="card-glow spotlight reveal group relative flex flex-col rounded-lg border border-[var(--color-ink-3)] bg-[var(--color-ink-2)]/90 p-6">
+          <div class="mb-4 flex items-center justify-between">
+            <span class="font-[var(--font-display)] text-4xl text-[var(--color-blood-bright)] opacity-80">{t.glyph}</span>
+            <span class="rounded bg-[var(--color-blood)]/20 px-2 py-0.5 text-[10px] uppercase tracking-wide text-[var(--color-dawn)]">{t.tag}</span>
+          </div>
+          <h3 class="font-[var(--font-display)] text-lg text-[var(--color-parchment)] group-hover:text-[var(--color-dawn)] transition-colors mb-1">{t.title}</h3>
+          <p class="text-sm text-[var(--color-muted)]">{t.desc}</p>
+          <span class="mt-4 text-sm text-[var(--color-dawn)]">Open tool →</span>
+        </a>
+      ))}
+    </div>
+  </section>
 
-  <div class="mt-10">
-    <AdSlot />
-  </div>
+  <AdSlot />
+
+  <section class="mt-10">
+    <h2 class="font-[var(--font-display)] text-xl text-[var(--color-dawn)] mb-1">Launching with the game</h2>
+    <p class="text-sm text-[var(--color-muted)] mb-4">
+      Framework's built — real data drops on September 3, 2026. Previews are live now.
+    </p>
+    <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      {comingTools.map((t) => (
+        <a href={t.href} class="card-glow spotlight reveal group relative flex flex-col rounded-lg border border-[var(--color-ink-3)] bg-[var(--color-ink-2)]/60 p-6">
+          <div class="mb-4 flex items-center justify-between">
+            <span class="font-[var(--font-display)] text-4xl text-[var(--color-muted)] opacity-70">{t.glyph}</span>
+            <span class="rounded bg-[var(--color-ink-3)] px-2 py-0.5 text-[10px] uppercase tracking-wide text-[var(--color-muted)]">{t.tag}</span>
+          </div>
+          <h3 class="font-[var(--font-display)] text-lg text-[var(--color-parchment)] group-hover:text-[var(--color-dawn)] transition-colors mb-1">{t.title}</h3>
+          <p class="text-sm text-[var(--color-muted)]">{t.desc}</p>
+          <span class="mt-4 text-sm text-[var(--color-dawn)]">Preview →</span>
+        </a>
+      ))}
+    </div>
+  </section>
 </BaseLayout>

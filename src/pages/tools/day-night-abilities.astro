@@ -1,0 +1,189 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Breadcrumbs from "../../components/Breadcrumbs.astro";
+import AdSlot from "../../components/AdSlot.astro";
+import JsonLd from "../../components/JsonLd.astro";
+import { GAME } from "../../consts";
+
+// Comparison rows — grounded in the announced human-by-day / vampire-by-night
+// premise. Exact ability names expand once the full kit is revealed at launch.
+const ROWS = [
+  {
+    aspect: "Form",
+    day: "Fully human — Coen as he was born.",
+    night: "The vampire half, unleashed.",
+  },
+  {
+    aspect: "Out in the world",
+    day: "Move freely in daylight, blend in among the living.",
+    night: "Heightened senses and reach — but you draw attention.",
+  },
+  {
+    aspect: "Dealing with people",
+    day: "Talk, trade, and take on quests with townsfolk.",
+    night: "Intimidation, feeding, and darker conversation options.",
+  },
+  {
+    aspect: "Combat",
+    day: "Grounded human fighting with steel and tools.",
+    night: "Supernatural strength, speed, blood drain, hex magic, and wolf form.",
+  },
+  {
+    aspect: "The trade-off",
+    day: "Restraint keeps Coen's humanity intact.",
+    night: "Raw power at the cost of who he is.",
+  },
+  {
+    aspect: "Watch out for",
+    day: "Limited supernatural power when you need muscle.",
+    night: "Higher infamy, vampiric weaknesses, and a moral toll.",
+  },
+  {
+    aspect: "Plays like",
+    day: "The human / penitent path.",
+    night: "The predator / vampire path.",
+  },
+];
+---
+
+<BaseLayout
+  title="Day vs Night Abilities — Human & Vampire Forms Compared"
+  description={`How Coen's two forms differ in ${GAME.title}: what the human day side and the vampire night side each do, and when to use them.`}
+>
+  <Breadcrumbs
+    items={[
+      { name: "Home", url: "/" },
+      { name: "Tools", url: "/tools/" },
+      { name: "Day vs Night Abilities", url: "/tools/day-night-abilities/" },
+    ]}
+  />
+
+  <header class="mb-6">
+    <h1 class="font-[var(--font-display)] text-3xl sm:text-4xl font-bold mb-2">
+      Day vs Night: Human & Vampire Abilities
+    </h1>
+    <p class="text-[var(--color-muted)] text-lg max-w-2xl">
+      Coen is human by day and vampire by night — and the two halves play
+      completely differently. Toggle a side to focus it (and flip the whole site
+      to that time of day).
+    </p>
+  </header>
+
+  <!-- Interactive toggle -->
+  <div id="dn-toggle" class="inline-flex rounded-lg border border-[var(--color-ink-3)] bg-[var(--color-ink-2)] p-1 mb-6">
+    <button data-side="day" class="dn-btn rounded-md px-5 py-2 text-sm font-semibold transition-colors">
+      ☀ Day · Human
+    </button>
+    <button data-side="night" class="dn-btn rounded-md px-5 py-2 text-sm font-semibold transition-colors">
+      ☾ Night · Vampire
+    </button>
+  </div>
+
+  <!-- Crawlable comparison table; columns get highlighted by the toggle -->
+  <div class="overflow-x-auto rounded-xl border border-[var(--color-ink-3)]">
+    <table class="w-full text-sm border-collapse min-w-[640px]">
+      <thead>
+        <tr class="bg-[var(--color-ink-3)]">
+          <th class="text-left p-3 font-[var(--font-display)] text-[var(--color-dawn)] w-1/5">Aspect</th>
+          <th data-col="day" class="dn-col p-3 text-left font-[var(--font-display)] text-[var(--color-parchment)]">☀ Day — Human</th>
+          <th data-col="night" class="dn-col p-3 text-left font-[var(--font-display)] text-[var(--color-parchment)]">☾ Night — Vampire</th>
+        </tr>
+      </thead>
+      <tbody>
+        {ROWS.map((r) => (
+          <tr class="border-t border-[var(--color-ink-3)] align-top">
+            <td class="p-3 text-[var(--color-dawn)]">{r.aspect}</td>
+            <td data-col="day" class="dn-col p-3 text-[var(--color-parchment)]">{r.day}</td>
+            <td data-col="night" class="dn-col p-3 text-[var(--color-parchment)]">{r.night}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+
+  <p id="dn-note" class="mt-4 text-sm text-[var(--color-muted)]">
+    Pick a side above to focus it. The day/night duality is confirmed; exact
+    ability names and numbers fill in as Rebel Wolves reveals Coen's full kit.
+  </p>
+
+  <div class="mt-10">
+    <AdSlot />
+  </div>
+
+  <section class="prose-content mt-10">
+    <h2>When should you use each form?</h2>
+    <p>
+      The smart play is matching the form to the moment, not picking a favourite.
+      <strong>Daylight</strong> is for the social and human side of the valley —
+      gathering information, trading, and quests that need a human face.
+      <strong>Night</strong> is when Coen's vampire power is at its peak: brute
+      problems, locked-off routes, and fights where you want the upper hand.
+    </p>
+    <p>
+      But the night isn't free. Leaning on the vampire half tends to raise your
+      <a href="/guides/infamy-system-explained/">infamy</a>, and it chips away at
+      Coen's humanity — a running narrative choice rather than a pure power pick.
+      For the deeper mechanics, read
+      <a href="/guides/vampire-powers-and-wolf-form/">Vampire Powers &amp; Wolf Form</a>
+      and <a href="/guides/combat-and-hex-magic/">Combat &amp; Hex Magic</a>.
+    </p>
+    <p>
+      Not sure which side you lean toward? Take the
+      <a href="/tools/which-dawnwalker-are-you/">Which Dawnwalker Are You? quiz</a>.
+    </p>
+  </section>
+
+  <JsonLd
+    schema={{
+      "@context": "https://schema.org",
+      "@type": "Article",
+      headline: "Day vs Night Abilities — Human & Vampire Forms Compared",
+      about: { "@type": "VideoGame", name: GAME.title },
+    }}
+  />
+</BaseLayout>
+
+<script>
+  // Day/Night focus toggle. Highlights the chosen column AND flips the whole
+  // site's day/night theme — the same mechanic the game is built around.
+  function initDayNight() {
+    const wrap = document.getElementById("dn-toggle");
+    if (!wrap || wrap.dataset.bound === "1") return;
+    wrap.dataset.bound = "1";
+    const note = document.getElementById("dn-note");
+    const buttons = wrap.querySelectorAll<HTMLButtonElement>(".dn-btn");
+
+    const NOTES: Record<string, string> = {
+      day: "Day, human form: free movement in sunlight, social play, and grounded steel combat. Safer, but without the vampire muscle.",
+      night: "Night, vampire form: supernatural strength, speed, drain, hex magic, and wolf form — at the cost of rising infamy and Coen's humanity.",
+    };
+
+    const focus = (side: string) => {
+      buttons.forEach((b) => {
+        const on = b.dataset.side === side;
+        b.style.background = on ? "var(--color-blood)" : "transparent";
+        b.style.color = on ? "#fff" : "var(--color-muted)";
+      });
+      document.querySelectorAll<HTMLElement>(".dn-col").forEach((el) => {
+        const on = el.dataset.col === side;
+        el.style.background = on ? "color-mix(in srgb, var(--color-dawn) 12%, transparent)" : "";
+        el.style.opacity = on ? "1" : "0.55";
+      });
+      if (note) note.textContent = NOTES[side];
+      // Flip the site theme to match — reuses the existing theme system.
+      try {
+        document.documentElement.dataset.theme = side;
+        localStorage.setItem("theme", side);
+      } catch (e) {
+        /* ignore */
+      }
+    };
+
+    buttons.forEach((b) => b.addEventListener("click", () => focus(b.dataset.side!)));
+
+    // Default focus follows whatever theme the visitor is already in.
+    focus(document.documentElement.dataset.theme === "day" ? "day" : "night");
+  }
+
+  document.addEventListener("astro:page-load", initDayNight);
+</script>
